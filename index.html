@@ -12,20 +12,20 @@
 <div class="container">
     <header>
         <div class="header-logo-container">
-            <img src="img/logo.png" alt="Logo Pastoral" class="header-logo-img">
+            <img src="img/logo.png (2).jpg" alt="Logo Iglesia Peniel" class="header-logo-img">
         </div>
         <h1 id="main-title">Elección de Junta Directiva Pastoral 2027</h1>
         <p id="main-subtitle">Módulo de Votación Individual</p>
     </header>
 
-    <!-- Barra de navegación (se ocultará automáticamente en las 20 computadoras) -->
+    <!-- Barra de navegación (se ocultará automáticamente en las computadoras de votación) -->
     <nav id="main-nav" style="display: none;">
         <button class="nav-btn active" onclick="switchTab('resultados', event)">1. Ver Resultados Globales</button>
         <button class="nav-btn" onclick="switchTab('admin', event)">2. Configurar Candidatos</button>
         <button class="nav-btn" onclick="switchTab('votar', event)">3. Registro de Voto (Vista Previa)</button>
     </nav>
 
-    <!-- SECCIÓN DE VOTACIÓN (Pública para las 20 computadoras) -->
+    <!-- SECCIÓN DE VOTACIÓN (Pública para las computadoras) -->
     <div id="sec-votar" class="section active">
         <h2>Ingreso del Hermano Votante</h2>
         <div class="form-group" style="margin-top: 15px;">
@@ -43,7 +43,7 @@
         <button class="btn btn-success" onclick="registrarVoto()">GUARDAR Y REGISTRAR VOTO</button>
     </div>
 
-    <!-- SECCIÓN DE ADMINISTRACIÓN (Solo para Computadora 1) -->
+    <!-- SECCIÓN DE ADMINISTRACIÓN -->
     <div id="sec-admin" class="section">
         <h2 id="form-admin-title">Agregar Nuevo Candidato</h2>
         <form id="form-candidato" onsubmit="guardarCandidato(event)" style="margin-top: 15px;">
@@ -52,11 +52,11 @@
             <div class="form-group">
                 <label>Grupo / Cargo Pastoral:</label>
                 <select id="cand-grupo" required>
-                    <option value="Misionero General">Misionero General</option>
-                    <option value="Ministro">Ministro</option>
-                    <option value="Diaconos">Diáconos</option>
-                    <option value="Secretario">Secretario</option>
-                    <option value="Tesorero">Tesorero</option>
+                    <option value="Misionero General">MISIONERO GENERAL</option>
+                    <option value="Ministro">MINISTRO</option>
+                    <option value="Diaconos">DIÁCONOS</option>
+                    <option value="Secretario">SECRETARIO</option>
+                    <option value="Tesorero">TESORERO</option>
                 </select>
             </div>
             <div class="form-group">
@@ -83,7 +83,7 @@
         <div id="admin-groups-container"></div>
     </div>
 
-    <!-- SECCIÓN DE RESULTADOS (Solo para Computadora 1) -->
+    <!-- SECCIÓN DE RESULTADOS -->
     <div id="sec-resultados" class="section">
         <h2>Conteo Global de Votos (Tiempo Real)</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">Resultados consolidados en vivo de todas las computadoras activas.</p>
@@ -113,11 +113,18 @@
     const db = firebase.firestore();
 
     const GRUPOS = ["Misionero General", "Ministro", "Diaconos", "Secretario", "Tesorero"];
+    const NOMBRES_MOSTRAR = {
+        "Misionero General": "MISIONERO GENERAL",
+        "Ministro": "MINISTRO",
+        "Diaconos": "DIÁCONOS",
+        "Secretario": "SECRETARIO",
+        "Tesorero": "TESORERO"
+    };
+
     let base64TempImage = "";
     let candidatos = [];
     let seleccionesActuales = {};
 
-    // Detección de Modo Administrador según la URL
     const urlParams = new URLSearchParams(window.location.search);
     const esAdmin = urlParams.get('admin') === 'true';
 
@@ -134,7 +141,6 @@
         }
     }
 
-    // Escuchador en tiempo real de candidatos
     db.collection("candidatos").onSnapshot(snapshot => {
         candidatos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         if (document.getElementById('sec-votar').classList.contains('active')) renderizarModuloVotacion();
@@ -264,7 +270,8 @@
 
         GRUPOS.forEach(grupo => {
             const list = candidatos.filter(c => c.grupo === grupo);
-            let html = `<div class="group-title">${grupo}</div>`;
+            const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
+            let html = `<div class="group-title">${tituloMostrar}</div>`;
             
             if(list.length === 0) {
                 html += `<p style="color: var(--text-muted); font-style: italic; padding: 5px;">No hay candidatos en este grupo.</p>`;
@@ -295,7 +302,8 @@
 
         GRUPOS.forEach(grupo => {
             const list = candidatos.filter(c => c.grupo === grupo);
-            let html = `<div class="group-title">${grupo}</div><div class="candidates-grid">`;
+            const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
+            let html = `<div class="group-title">${tituloMostrar}</div><div class="candidates-grid">`;
             
             if(list.length === 0) {
                 html += `<p style="color: var(--text-muted); font-style: italic;">No hay candidatos disponibles en este grupo.</p>`;
@@ -337,7 +345,8 @@
         for (let grupo of GRUPOS) {
             const list = candidatos.filter(c => c.grupo === grupo);
             if (list.length > 0 && !seleccionesActuales[grupo]) {
-                alert(`Por favor seleccione un candidato para el grupo: ${grupo}`);
+                const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
+                alert(`Por favor seleccione un candidato para el grupo: ${tituloMostrar}`);
                 return;
             }
         }
@@ -382,6 +391,7 @@
 
             GRUPOS.forEach(grupo => {
                 const list = candidatos.filter(c => c.grupo === grupo);
+                const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
                 
                 let conteo = list.map(c => {
                     const totalVotos = votosGuardados.filter(v => v.votos && v.votos[grupo] === c.id).length;
@@ -390,7 +400,7 @@
 
                 conteo.sort((a, b) => b.votos - a.votos);
 
-                let html = `<div class="group-title">${grupo}</div>`;
+                let html = `<div class="group-title">${tituloMostrar}</div>`;
                 
                 if(conteo.length === 0) {
                     html += `<p style="color: var(--text-muted); font-style: italic;">No hay candidatos registrados.</p>`;
@@ -409,7 +419,7 @@
                     conteo.forEach(c => {
                         html += `
                             <tr>
-                                <td><strong>${c.nombre} ${c.apellido}</strong></td>
+                                <td><strong style="text-transform: uppercase; font-size: 1.05rem;">${c.nombre} ${c.apellido}</strong></td>
                                 <td style="text-align: center;"><span class="badge-votes">${c.votos}</span></td>
                             </tr>
                         `;
@@ -425,7 +435,6 @@
         }
     }
 
-    // Arrancar la app configurando la vista correspondiente
     inicializarModo();
 </script>
 
