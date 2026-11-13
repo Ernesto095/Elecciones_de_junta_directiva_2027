@@ -57,8 +57,7 @@ header {
     height: auto;
     display: block;
     margin: 0 auto;
-    filter: invert(1) grayscale(1) contrast(200%);
-    mix-blend-mode: screen;
+    border-radius: 10px; /* Suaviza las esquinas del cuadro blanco */
 }
 
 #main-title {
