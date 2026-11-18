@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elección de Junta Directiva Pastoral 2027</title>
-    <!-- Conexión con tu archivo CSS en la carpeta css -->
+    <title>Elección de Junta Directiva 2027</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Librerías para generar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
 <div class="container">
     <header>
         <div class="header-logo-container">
-            <img src="img/logo.png (2).jpg" alt="Logo Iglesia Peniel" class="header-logo-img">
+            <!-- Si no tienes la imagen, puedes quitar esta línea o cambiar la ruta -->
+            <img src="img/logo.png (2).jpg" alt="Logo Iglesia" class="header-logo-img">
         </div>
-        <h1 id="main-title">Elección de Junta Directiva Pastoral 2027</h1>
+        <h1 id="main-title">Elección de Junta Directiva 2027</h1>
         <p id="main-subtitle">Módulo de Votación Individual</p>
     </header>
 
-    <!-- Barra de navegación (se ocultará automáticamente en las computadoras de votación) -->
     <nav id="main-nav" style="display: none;">
-        <button class="nav-btn active" onclick="switchTab('resultados', event)">1. Ver Resultados Globales</button>
+        <button class="nav-btn active" onclick="switchTab('resultados', event)">1. Ver Resultados y Reporte</button>
         <button class="nav-btn" onclick="switchTab('admin', event)">2. Configurar Candidatos</button>
         <button class="nav-btn" onclick="switchTab('votar', event)">3. Registro de Voto (Vista Previa)</button>
     </nav>
 
-    <!-- SECCIÓN DE VOTACIÓN (Pública para las computadoras) -->
+    <!-- SECCIÓN DE VOTACIÓN -->
     <div id="sec-votar" class="section active">
         <h2>Ingreso del Hermano Votante</h2>
         <div class="form-group" style="margin-top: 15px;">
@@ -36,36 +38,30 @@
         <hr style="margin: 25px 0; border: none; border-top: 1px solid #e2e8f0;">
 
         <h2>Selección de Candidatos</h2>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Seleccione un solo candidato por cada grupo pastoral:</p>
+        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 1.1rem;">
+            <strong>Nota:</strong> Use las flechas grandes para ver más opciones. Seleccione un candidato para cada cargo. Un mismo candidato no puede ser elegido dos veces.
+        </p>
 
         <div id="voting-groups-container"></div>
 
         <button class="btn btn-success" onclick="registrarVoto()">GUARDAR Y REGISTRAR VOTO</button>
     </div>
 
-    <!-- SECCIÓN DE ADMINISTRACIÓN -->
+    <!-- SECCIÓN DE ADMINISTRACIÓN (AGREGAR CANDIDATOS) -->
     <div id="sec-admin" class="section">
-        <h2 id="form-admin-title">Agregar Nuevo Candidato</h2>
+        <h2 id="form-admin-title">Agregar Nuevo Candidato al Padrón</h2>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Agregue aquí a los hermanos. Estarán disponibles para todos los cargos.</p>
+        
         <form id="form-candidato" onsubmit="guardarCandidato(event)" style="margin-top: 15px;">
             <input type="hidden" id="cand-id">
             
             <div class="form-group">
-                <label>Grupo / Cargo Pastoral:</label>
-                <select id="cand-grupo" required>
-                    <option value="Misionero General">MISIONERO GENERAL</option>
-                    <option value="Ministro">MINISTRO</option>
-                    <option value="Diaconos">DIÁCONOS</option>
-                    <option value="Secretario">SECRETARIO</option>
-                    <option value="Tesorero">TESORERO</option>
-                </select>
-            </div>
-            <div class="form-group">
                 <label>Nombres:</label>
-                <input type="text" id="cand-nombre" required placeholder="Ej: Mario Antonio" oninput="validateOnlyLetters(this)">
+                <input type="text" id="cand-nombre" required placeholder="Ej: Juan Antonio" oninput="validateOnlyLetters(this)">
             </div>
             <div class="form-group">
                 <label>Apellidos:</label>
-                <input type="text" id="cand-apellido" required placeholder="Ej: Pérez González" oninput="validateOnlyLetters(this)">
+                <input type="text" id="cand-apellido" required placeholder="Ej: Pérez García" oninput="validateOnlyLetters(this)">
             </div>
             <div class="form-group">
                 <label>Imagen del Candidato (Subir foto O cargar enlace URL):</label>
@@ -79,34 +75,39 @@
 
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-        <h2>Candidatos Registrados por Cargo</h2>
-        <div id="admin-groups-container"></div>
+        <h2>Lista Global de Candidatos Registrados</h2>
+        <div class="admin-grid" id="admin-groups-container" style="margin-top: 15px;"></div>
     </div>
 
-    <!-- SECCIÓN DE RESULTADOS -->
+    <!-- SECCIÓN DE RESULTADOS Y PDF -->
     <div id="sec-resultados" class="section">
-        <h2>Conteo Global de Votos (Tiempo Real)</h2>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">Resultados consolidados en vivo de todas las computadoras activas.</p>
+        <h2>Conteo Global y Reportes</h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Resultados consolidados en vivo y descarga de registros.</p>
         
-        <button class="btn btn-primary" onclick="renderizarResultados()">Actualizar / Ver Conteo</button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="renderizarResultados()">Actualizar / Ver Conteo</button>
+            <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 12px 20px; font-size: 1rem;" onclick="descargarPDF()">Descargar Detalle por DUI</button>
+            
+            <!-- BOTÓN NUEVO DE TOTALES Y ORDEN MAYOR A MENOR -->
+            <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 12px 20px; font-size: 1rem; background: #047857;" onclick="descargarPDFTotales()">Descargar PDF de Totales</button>
+        </div>
 
-        <div id="results-container"></div>
+        <div id="results-container" style="margin-top: 20px;"></div>
     </div>
 </div>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
+    // CONFIGURACIÓN DE FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyCVlxVjMyxXt204UP4FLxz_dEhkAUqYuQ",
         authDomain: "eleccion-junta-pastoral-2027.firebaseapp.com",
         projectId: "eleccion-junta-pastoral-2027",
         storageBucket: "eleccion-junta-pastoral-2027.firebasestorage.app",
         messagingSenderId: "576863232357",
-        appId: "1:576863232357:web:fe39c85c6727d2f4a0818c",
-        measurementId: "G-E1QSHEH8YC"
+        appId: "1:576863232357:web:fe39c85c6727d2f4a0818c"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -166,7 +167,6 @@
     function formatAndValidateDUI(input) {
         let raw = input.value.replace(/\D/g, '');
         if (raw.length > 9) raw = raw.substring(0, 9);
-
         if (raw.length > 8) {
             input.value = raw.substring(0, 8) + '-' + raw.substring(8, 9);
         } else {
@@ -188,7 +188,6 @@
     async function guardarCandidato(e) {
         e.preventDefault();
         const id = document.getElementById('cand-id').value;
-        const grupo = document.getElementById('cand-grupo').value;
         const nombre = document.getElementById('cand-nombre').value.trim();
         const apellido = document.getElementById('cand-apellido').value.trim();
         let foto = document.getElementById('cand-foto').value.trim();
@@ -202,7 +201,7 @@
 
         try {
             if (id) {
-                const dataUpdate = { grupo, nombre, apellido };
+                const dataUpdate = { nombre, apellido };
                 if (foto) dataUpdate.foto = foto;
                 await db.collection("candidatos").doc(id).update(dataUpdate);
                 alert('¡Candidato actualizado con éxito!');
@@ -212,7 +211,6 @@
                     return;
                 }
                 await db.collection("candidatos").add({
-                    grupo,
                     nombre,
                     apellido,
                     foto,
@@ -231,7 +229,6 @@
         if (!c) return;
 
         document.getElementById('cand-id').value = c.id;
-        document.getElementById('cand-grupo').value = c.grupo;
         document.getElementById('cand-nombre').value = c.nombre;
         document.getElementById('cand-apellido').value = c.apellido;
         document.getElementById('cand-foto').value = c.foto.startsWith('data:image') ? '' : c.foto;
@@ -249,13 +246,13 @@
         document.getElementById('cand-file').value = "";
         base64TempImage = "";
 
-        document.getElementById('form-admin-title').innerText = "Agregar Nuevo Candidato";
+        document.getElementById('form-admin-title').innerText = "Agregar Nuevo Candidato al Padrón";
         document.getElementById('btn-submit-candidato').innerText = "Agregar Candidato";
         document.getElementById('btn-cancel-edit').style.display = "none";
     }
 
     async function eliminarCandidato(id) {
-        if(confirm('¿Está seguro de eliminar este candidato?')) {
+        if(confirm('¿Está seguro de eliminar este candidato? Desaparecerá de todos los cargos.')) {
             try {
                 await db.collection("candidatos").doc(id).delete();
             } catch (error) {
@@ -268,31 +265,27 @@
         const container = document.getElementById('admin-groups-container');
         container.innerHTML = "";
 
-        GRUPOS.forEach(grupo => {
-            const list = candidatos.filter(c => c.grupo === grupo);
-            const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
-            let html = `<div class="group-title">${tituloMostrar}</div>`;
-            
-            if(list.length === 0) {
-                html += `<p style="color: var(--text-muted); font-style: italic; padding: 5px;">No hay candidatos en este grupo.</p>`;
-            } else {
-                list.forEach(c => {
-                    html += `
-                        <div class="admin-candidate-item">
-                            <div class="admin-candidate-info">
-                                <img src="${c.foto}" alt="Foto">
-                                <span><strong>${c.nombre} ${c.apellido}</strong></span>
-                            </div>
-                            <div class="admin-actions">
-                                <button class="btn btn-edit" onclick="editarCandidato('${c.id}')">Editar</button>
-                                <button class="btn btn-danger" onclick="eliminarCandidato('${c.id}')">Eliminar</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            container.innerHTML += html;
+        if(candidatos.length === 0) {
+            container.innerHTML = `<p style="color: var(--text-muted); font-style: italic; width: 100%;">Aún no has agregado candidatos al sistema.</p>`;
+            return;
+        }
+
+        candidatos.forEach(c => {
+            container.innerHTML += `
+                <div class="candidate-card admin-card">
+                    <img src="${c.foto}" class="candidate-img" alt="Foto">
+                    <div class="candidate-name" style="margin-bottom: 10px;">${c.nombre} ${c.apellido}</div>
+                    <button class="btn btn-edit" style="width: 100%; margin-bottom: 5px; font-size: 0.9rem; padding: 8px;" onclick="editarCandidato('${c.id}')">Editar</button>
+                    <button class="btn btn-danger" style="width: 100%; font-size: 0.9rem; padding: 8px;" onclick="eliminarCandidato('${c.id}')">Eliminar</button>
+                </div>
+            `;
         });
+    }
+
+    function scrollCarousel(id, direction) {
+        const container = document.getElementById(id);
+        const scrollAmount = container.clientWidth; 
+        container.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
     }
 
     function renderizarModuloVotacion() {
@@ -301,36 +294,73 @@
         seleccionesActuales = {};
 
         GRUPOS.forEach(grupo => {
-            const list = candidatos.filter(c => c.grupo === grupo);
+            const prefix = grupo.replace(/\s+/g, '');
             const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
-            let html = `<div class="group-title">${tituloMostrar}</div><div class="candidates-grid">`;
             
-            if(list.length === 0) {
-                html += `<p style="color: var(--text-muted); font-style: italic;">No hay candidatos disponibles en este grupo.</p>`;
+            let html = `<div class="group-title">${tituloMostrar}</div>`;
+            
+            if(candidatos.length === 0) {
+                html += `<p style="color: var(--text-muted); font-style: italic;">Aún no hay candidatos en el sistema. El administrador debe agregarlos primero.</p>`;
             } else {
-                list.forEach(c => {
+                html += `
+                <div class="carousel-container">
+                    <button class="nav-arrow" onclick="scrollCarousel('carousel-${prefix}', -1)">❮</button>
+                    <div class="candidates-carousel" id="carousel-${prefix}">
+                `;
+                candidatos.forEach(c => {
                     html += `
-                        <div class="candidate-card" id="card-${c.id}" onclick="seleccionarCandidato('${grupo}', '${c.id}')">
+                        <div class="candidate-card" id="card-${prefix}-${c.id}" onclick="seleccionarCandidato('${grupo}', '${c.id}')">
                             <img src="${c.foto}" class="candidate-img" alt="Foto">
                             <div class="candidate-name">${c.nombre}<br>${c.apellido}</div>
                         </div>
                     `;
                 });
+                html += `
+                    </div>
+                    <button class="nav-arrow" onclick="scrollCarousel('carousel-${prefix}', 1)">❯</button>
+                </div>
+                `;
             }
-            html += `</div>`;
             container.innerHTML += html;
         });
     }
 
     function seleccionarCandidato(grupo, candId) {
-        const list = candidatos.filter(c => c.grupo === grupo);
-        list.forEach(c => {
-            const el = document.getElementById(`card-${c.id}`);
+        const prefix = grupo.replace(/\s+/g, '');
+        const cardActual = document.getElementById(`card-${prefix}-${candId}`);
+        
+        if (cardActual.classList.contains('disabled')) {
+            alert("Este hermano ya fue seleccionado para otro cargo. Elija a otra persona.");
+            return;
+        }
+
+        candidatos.forEach(c => {
+            const el = document.getElementById(`card-${prefix}-${c.id}`);
             if(el) el.classList.remove('selected');
         });
 
-        document.getElementById(`card-${candId}`).classList.add('selected');
+        cardActual.classList.add('selected');
         seleccionesActuales[grupo] = candId;
+        
+        actualizarDisponibilidadCandidatos();
+    }
+
+    function actualizarDisponibilidadCandidatos() {
+        const seleccionados = Object.values(seleccionesActuales);
+        
+        GRUPOS.forEach(grupo => {
+            const prefix = grupo.replace(/\s+/g, '');
+            candidatos.forEach(c => {
+                const card = document.getElementById(`card-${prefix}-${c.id}`);
+                if (card) {
+                    if (seleccionados.includes(c.id) && seleccionesActuales[grupo] !== c.id) {
+                        card.classList.add('disabled');
+                    } else {
+                        card.classList.remove('disabled');
+                    }
+                }
+            });
+        });
     }
 
     async function registrarVoto() {
@@ -343,10 +373,9 @@
         }
 
         for (let grupo of GRUPOS) {
-            const list = candidatos.filter(c => c.grupo === grupo);
-            if (list.length > 0 && !seleccionesActuales[grupo]) {
+            if (candidatos.length > 0 && !seleccionesActuales[grupo]) {
                 const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
-                alert(`Por favor seleccione un candidato para el grupo: ${tituloMostrar}`);
+                alert(`Falta seleccionar un candidato para el cargo: ${tituloMostrar}`);
                 return;
             }
         }
@@ -354,7 +383,7 @@
         try {
             const duiDoc = await db.collection("duis").doc(dui).get();
             if (duiDoc.exists) {
-                alert('¡ERROR! Este DUI ya fue registrado en el sistema. No se permite duplicar votos.');
+                alert('¡ERROR! Este DUI ya emitió su voto. No se permite votar dos veces.');
                 return;
             }
 
@@ -372,7 +401,8 @@
 
             duiInput.value = "";
             renderizarModuloVotacion();
-            alert('¡Voto registrado con éxito! Sistema listo para el siguiente hermano.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            alert('¡Voto registrado con éxito! Sistema limpio y listo para el siguiente hermano.');
 
         } catch (error) {
             alert("Error al guardar voto en la base de datos: " + error.message);
@@ -390,19 +420,19 @@
             container.innerHTML = "";
 
             GRUPOS.forEach(grupo => {
-                const list = candidatos.filter(c => c.grupo === grupo);
                 const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
                 
-                let conteo = list.map(c => {
+                let conteo = candidatos.map(c => {
                     const totalVotos = votosGuardados.filter(v => v.votos && v.votos[grupo] === c.id).length;
                     return { ...c, votos: totalVotos };
                 });
 
+                // Ordenar tabla visual de mayor a menor
                 conteo.sort((a, b) => b.votos - a.votos);
 
                 let html = `<div class="group-title">${tituloMostrar}</div>`;
                 
-                if(conteo.length === 0) {
+                if(candidatos.length === 0) {
                     html += `<p style="color: var(--text-muted); font-style: italic;">No hay candidatos registrados.</p>`;
                 } else {
                     html += `
@@ -415,8 +445,8 @@
                             </thead>
                             <tbody>
                     `;
-                    
                     conteo.forEach(c => {
+                        // En admin siempre mostramos todos, ordenados
                         html += `
                             <tr>
                                 <td><strong style="text-transform: uppercase; font-size: 1.05rem;">${c.nombre} ${c.apellido}</strong></td>
@@ -424,14 +454,126 @@
                             </tr>
                         `;
                     });
-
                     html += `</tbody></table>`;
                 }
-
                 container.innerHTML += html;
             });
         } catch (error) {
             container.innerHTML = "<p style='color: red;'>Error al cargar resultados: " + error.message + "</p>";
+        }
+    }
+
+    // PDF 1: Detalle por DUI
+    async function descargarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape'); 
+
+        doc.setFontSize(14);
+        doc.text("Reporte Detallado de Votaciones - Elección Junta Directiva", 14, 15);
+        doc.setFontSize(10);
+        doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 22);
+
+        try {
+            const snapshot = await db.collection("votos").get();
+            const votosList = snapshot.docs.map(doc => doc.data());
+
+            const dictCandidatos = {};
+            candidatos.forEach(c => dictCandidatos[c.id] = `${c.nombre} ${c.apellido}`);
+
+            const tableColumn = ["DUI del Votante", "Misionero General", "Ministro", "Diáconos", "Secretario", "Tesorero"];
+            const tableRows = [];
+
+            votosList.forEach(voto => {
+                const row = [
+                    voto.dui,
+                    dictCandidatos[voto.votos["Misionero General"]] || "Ninguno",
+                    dictCandidatos[voto.votos["Ministro"]] || "Ninguno",
+                    dictCandidatos[voto.votos["Diaconos"]] || "Ninguno",
+                    dictCandidatos[voto.votos["Secretario"]] || "Ninguno",
+                    dictCandidatos[voto.votos["Tesorero"]] || "Ninguno"
+                ];
+                tableRows.push(row);
+            });
+
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 30,
+                styles: { fontSize: 9, cellPadding: 3 },
+                headStyles: { fillColor: [30, 64, 175], textColor: [255, 255, 255] },
+                alternateRowStyles: { fillColor: [241, 245, 249] }
+            });
+
+            doc.save("Reporte_Votos_Detallado_2027.pdf");
+        } catch (error) {
+            alert("Error al generar el PDF: " + error.message);
+        }
+    }
+
+    // PDF 2: TOTALES Y GANADORES ORDENADOS (NUEVA FUNCIÓN)
+    async function descargarPDFTotales() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('portrait'); // Formato vertical 
+
+        doc.setFontSize(16);
+        doc.text("Resultados Oficiales - Elección Junta Directiva 2027", 14, 15);
+        doc.setFontSize(10);
+        doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 22);
+
+        try {
+            const snapshot = await db.collection("votos").get();
+            const votosList = snapshot.docs.map(doc => doc.data());
+            
+            // CONTEO TOTAL DE PERSONAS QUE VOTARON
+            const totalVotantes = votosList.length;
+
+            doc.setFontSize(12);
+            doc.text(`Total general de hermanos que votaron: ${totalVotantes}`, 14, 32);
+
+            let startY = 45;
+
+            GRUPOS.forEach(grupo => {
+                const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
+                
+                let conteo = candidatos.map(c => {
+                    const totalVotos = votosList.filter(v => v.votos && v.votos[grupo] === c.id).length;
+                    return { nombre: `${c.nombre} ${c.apellido}`, votos: totalVotos };
+                });
+
+                // ORDENAR CANDIDATOS DE MAYOR A MENOR (EL QUE TIENE MÁS VOTOS ARRIBA)
+                conteo.sort((a, b) => b.votos - a.votos);
+
+                const tableColumn = ["Candidato", "Total de Votos Obtenidos"];
+                const tableRows = [];
+
+                conteo.forEach(c => {
+                    tableRows.push([c.nombre, c.votos.toString()]);
+                });
+
+                doc.setFontSize(12);
+                doc.text(`Resultados para el cargo de: ${tituloMostrar}`, 14, startY);
+                
+                doc.autoTable({
+                    head: [tableColumn],
+                    body: tableRows,
+                    startY: startY + 5,
+                    styles: { fontSize: 10, cellPadding: 3 },
+                    headStyles: { fillColor: [4, 120, 87], textColor: [255, 255, 255] }, // Verde oscuro para diferenciarlo del otro PDF
+                    alternateRowStyles: { fillColor: [241, 245, 249] }
+                });
+
+                startY = doc.lastAutoTable.finalY + 15;
+                
+                // Si la tabla llega al fondo de la hoja, creamos otra página
+                if (startY > 260) {
+                    doc.addPage();
+                    startY = 20;
+                }
+            });
+
+            doc.save("Reporte_Resultados_Totales_2027.pdf");
+        } catch (error) {
+            alert("Error al generar el PDF de totales: " + error.message);
         }
     }
 
