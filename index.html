@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elección de Junta Directiva 2027</title>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Enlace al archivo CSS externo -->
+    <link rel="stylesheet" href="style.css">
+    
     <!-- Librerías para generar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -14,8 +16,7 @@
 <div class="container">
     <header>
         <div class="header-logo-container">
-            <!-- Si no tienes la imagen, puedes quitar esta línea o cambiar la ruta -->
-            <img src="img/logo.png (2).jpg" alt="Logo Iglesia" class="header-logo-img">
+            <img src="img/logo.png (2).jpg" alt="Logo Iglesia" class="header-logo-img" onerror="this.style.display='none'">
         </div>
         <h1 id="main-title">Elección de Junta Directiva 2027</h1>
         <p id="main-subtitle">Módulo de Votación Individual</p>
@@ -47,7 +48,7 @@
         <button class="btn btn-success" onclick="registrarVoto()">GUARDAR Y REGISTRAR VOTO</button>
     </div>
 
-    <!-- SECCIÓN DE ADMINISTRACIÓN (AGREGAR CANDIDATOS) -->
+    <!-- SECCIÓN DE ADMINISTRACIÓN -->
     <div id="sec-admin" class="section">
         <h2 id="form-admin-title">Agregar Nuevo Candidato al Padrón</h2>
         <p style="color: var(--text-muted); margin-bottom: 15px;">Agregue aquí a los hermanos. Estarán disponibles para todos los cargos.</p>
@@ -87,8 +88,6 @@
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn btn-primary" onclick="renderizarResultados()">Actualizar / Ver Conteo</button>
             <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 12px 20px; font-size: 1rem;" onclick="descargarPDF()">Descargar Detalle por DUI</button>
-            
-            <!-- BOTÓN NUEVO DE TOTALES Y ORDEN MAYOR A MENOR -->
             <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 12px 20px; font-size: 1rem; background: #047857;" onclick="descargarPDFTotales()">Descargar PDF de Totales</button>
         </div>
 
@@ -96,6 +95,7 @@
     </div>
 </div>
 
+<!-- Scripts de Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -231,7 +231,7 @@
         document.getElementById('cand-id').value = c.id;
         document.getElementById('cand-nombre').value = c.nombre;
         document.getElementById('cand-apellido').value = c.apellido;
-        document.getElementById('cand-foto').value = c.foto.startsWith('data:image') ? '' : c.foto;
+        document.getElementById('cand-foto').value = (c.foto && c.foto.startsWith('data:image')) ? '' : c.foto;
 
         document.getElementById('form-admin-title').innerText = "Editar Candidato";
         document.getElementById('btn-submit-candidato').innerText = "Actualizar Información";
@@ -427,7 +427,6 @@
                     return { ...c, votos: totalVotos };
                 });
 
-                // Ordenar tabla visual de mayor a menor
                 conteo.sort((a, b) => b.votos - a.votos);
 
                 let html = `<div class="group-title">${tituloMostrar}</div>`;
@@ -446,7 +445,6 @@
                             <tbody>
                     `;
                     conteo.forEach(c => {
-                        // En admin siempre mostramos todos, ordenados
                         html += `
                             <tr>
                                 <td><strong style="text-transform: uppercase; font-size: 1.05rem;">${c.nombre} ${c.apellido}</strong></td>
@@ -463,7 +461,6 @@
         }
     }
 
-    // PDF 1: Detalle por DUI
     async function descargarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('landscape'); 
@@ -510,10 +507,9 @@
         }
     }
 
-    // PDF 2: TOTALES Y GANADORES ORDENADOS (NUEVA FUNCIÓN)
     async function descargarPDFTotales() {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('portrait'); // Formato vertical 
+        const doc = new jsPDF('portrait'); 
 
         doc.setFontSize(16);
         doc.text("Resultados Oficiales - Elección Junta Directiva 2027", 14, 15);
@@ -524,7 +520,6 @@
             const snapshot = await db.collection("votos").get();
             const votosList = snapshot.docs.map(doc => doc.data());
             
-            // CONTEO TOTAL DE PERSONAS QUE VOTARON
             const totalVotantes = votosList.length;
 
             doc.setFontSize(12);
@@ -540,7 +535,6 @@
                     return { nombre: `${c.nombre} ${c.apellido}`, votos: totalVotos };
                 });
 
-                // ORDENAR CANDIDATOS DE MAYOR A MENOR (EL QUE TIENE MÁS VOTOS ARRIBA)
                 conteo.sort((a, b) => b.votos - a.votos);
 
                 const tableColumn = ["Candidato", "Total de Votos Obtenidos"];
@@ -558,13 +552,12 @@
                     body: tableRows,
                     startY: startY + 5,
                     styles: { fontSize: 10, cellPadding: 3 },
-                    headStyles: { fillColor: [4, 120, 87], textColor: [255, 255, 255] }, // Verde oscuro para diferenciarlo del otro PDF
+                    headStyles: { fillColor: [4, 120, 87], textColor: [255, 255, 255] }, 
                     alternateRowStyles: { fillColor: [241, 245, 249] }
                 });
 
                 startY = doc.lastAutoTable.finalY + 15;
                 
-                // Si la tabla llega al fondo de la hoja, creamos otra página
                 if (startY > 260) {
                     doc.addPage();
                     startY = 20;
