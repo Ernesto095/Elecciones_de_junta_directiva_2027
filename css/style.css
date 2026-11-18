@@ -240,7 +240,6 @@ select:focus {
     transition: all 0.3s ease;
     background: white;
     position: relative;
-    
     flex: 0 0 calc(33.333% - 10px); 
     min-width: 240px; 
     scroll-snap-align: start;
@@ -285,12 +284,16 @@ select:focus {
     background: #f8fafc;
 }
 
+/* MEJORA EN LAS IMÁGENES DE CANDIDATOS */
 .candidate-img {
     width: 100%;
-    height: 180px; 
-    object-fit: cover;
+    height: 240px; /* Mayor altura para fotos tamaño carné/retrato */
+    object-fit: cover; /* Llena el espacio sin deformar la imagen */
+    object-position: top center; /* Evita que las cabezas se corten */
     border-radius: 8px;
     margin-bottom: 15px;
+    background-color: #f1f5f9;
+    border: 1px solid var(--border);
 }
 
 .candidate-name {
