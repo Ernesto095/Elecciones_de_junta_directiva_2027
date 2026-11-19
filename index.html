@@ -141,9 +141,9 @@
     };
 
     let base64TempImage = "";
-    // Cargar candidatos desde caché local por si arranca sin internet
     let candidatos = JSON.parse(localStorage.getItem('candidatos_cache')) || [];
     let seleccionesActuales = {};
+    let ordenPorGrupo = {}; // Guardará el orden variado de cada cargo
 
     const urlParams = new URLSearchParams(window.location.search);
     const esAdmin = urlParams.get('admin') === 'true';
@@ -212,7 +212,7 @@
                 const duiDoc = await db.collection("duis").doc(voto.dui).get();
                 if (duiDoc.exists) {
                     duplicados++;
-                    continue; // Si ya votó en la nube, se descarta el duplicado
+                    continue;
                 }
 
                 const batch = db.batch();
@@ -235,7 +235,6 @@
             }
         }
 
-        // Guardar solo los que hayan vuelto a fallar (normalmente será vacío)
         localStorage.setItem('votos_offline_pendientes', JSON.stringify(fallidos));
         actualizarBannerOffline();
         renderizarResultados();
@@ -268,6 +267,11 @@
     function inicializarModo() {
         const nav = document.getElementById('main-nav');
         actualizarBannerOffline();
+
+        if (candidatos.length === 0) {
+            renderizarModuloVotacion();
+        }
+
         if (esAdmin) {
             nav.style.display = 'flex';
             document.getElementById('main-subtitle').innerText = "Panel Principal de Control y Conteo";
@@ -279,14 +283,21 @@
         }
     }
 
-    db.collection("candidatos").onSnapshot(snapshot => {
-        candidatos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        // Actualizar respaldo local de candidatos para uso offline
-        localStorage.setItem('candidatos_cache', JSON.stringify(candidatos));
-        
-        if (document.getElementById('sec-votar').classList.contains('active')) renderizarModuloVotacion();
-        if (document.getElementById('sec-admin').classList.contains('active')) renderizarModuloAdmin();
-    });
+    db.collection("candidatos").onSnapshot(
+        snapshot => {
+            if (!snapshot.empty) {
+                candidatos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                localStorage.setItem('candidatos_cache', JSON.stringify(candidatos));
+            }
+            
+            if (document.getElementById('sec-votar').classList.contains('active')) renderizarModuloVotacion();
+            if (document.getElementById('sec-admin').classList.contains('active')) renderizarModuloAdmin();
+        },
+        error => {
+            console.error("Error conectando a Firebase en el móvil:", error);
+            if (document.getElementById('sec-votar').classList.contains('active')) renderizarModuloVotacion();
+        }
+    );
 
     function switchTab(tab, event) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -431,14 +442,27 @@
         container.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
     }
 
+    // Mezclar orden de candidatos (Algoritmo Fisher-Yates)
+    function mezclarLista(array) {
+        let copia = [...array];
+        for (let i = copia.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copia[i], copia[j]] = [copia[j], copia[i]];
+        }
+        return copia;
+    }
+
     function renderizarModuloVotacion() {
         const container = document.getElementById('voting-groups-container');
         container.innerHTML = "";
         seleccionesActuales = {};
+        ordenPorGrupo = {};
 
         GRUPOS.forEach(grupo => {
             const prefix = grupo.replace(/\s+/g, '');
             const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
+            
+            ordenPorGrupo[grupo] = mezclarLista(candidatos);
             
             let html = `<div class="group-title">${tituloMostrar}</div>`;
             
@@ -450,7 +474,7 @@
                     <button class="nav-arrow" onclick="scrollCarousel('carousel-${prefix}', -1)">❮</button>
                     <div class="candidates-carousel" id="carousel-${prefix}">
                 `;
-                candidatos.forEach(c => {
+                ordenPorGrupo[grupo].forEach(c => {
                     html += `
                         <div class="candidate-card" id="card-${prefix}-${c.id}" onclick="seleccionarCandidato('${grupo}', '${c.id}')">
                             <img src="${c.foto}" class="candidate-img" alt="Foto">
@@ -493,7 +517,24 @@
         
         GRUPOS.forEach(grupo => {
             const prefix = grupo.replace(/\s+/g, '');
-            candidatos.forEach(c => {
+            const carousel = document.getElementById(`carousel-${prefix}`);
+            if (!carousel) return;
+
+            const listaBase = ordenPorGrupo[grupo] || candidatos;
+            let disponibles = [];
+            let bloqueados = [];
+
+            listaBase.forEach(c => {
+                const estaBloqueado = seleccionados.includes(c.id) && seleccionesActuales[grupo] !== c.id;
+                if (estaBloqueado) {
+                    bloqueados.push(c);
+                } else {
+                    disponibles.push(c);
+                }
+            });
+
+            // Reordenar en pantalla: primero los disponibles (en su orden variado) y al final los grises
+            [...disponibles, ...bloqueados].forEach(c => {
                 const card = document.getElementById(`card-${prefix}-${c.id}`);
                 if (card) {
                     if (seleccionados.includes(c.id) && seleccionesActuales[grupo] !== c.id) {
@@ -501,8 +542,13 @@
                     } else {
                         card.classList.remove('disabled');
                     }
+                    carousel.appendChild(card);
                 }
             });
+
+            if (!seleccionesActuales[grupo]) {
+                carousel.scrollTo({ left: 0, behavior: 'smooth' });
+            }
         });
     }
 
@@ -524,7 +570,6 @@
             }
         }
 
-        // 1. Verificar primero si el DUI ya votó localmente en este dispositivo
         const pendientes = obtenerVotosLocales();
         if (pendientes.some(v => v.dui === dui)) {
             alert('¡ERROR! Este DUI ya emitió su voto en este dispositivo. No se permite votar dos veces.');
@@ -540,14 +585,12 @@
             fechaLocal: new Date().toISOString()
         };
 
-        // 2. Si el navegador detecta que no hay internet, ir directo al Plan B
         if (!navigator.onLine) {
             guardarVotoLocal(paqueteVoto);
             limpiarFormularioTrasVoto(duiInput, btnVotar, '¡Voto guardado en modo SIN INTERNET (Respaldo Local)! Listo para el siguiente hermano.');
             return;
         }
 
-        // 3. Intentar guardar en Firebase con límite de tiempo (5 segundos) por si la red está colgada
         try {
             const timeoutPromise = new Promise((_, reject) => 
                 setTimeout(() => reject(new Error("Tiempo de espera agotado")), 5000)
@@ -582,7 +625,6 @@
                 btnVotar.disabled = false;
                 btnVotar.innerText = "GUARDAR Y REGISTRAR VOTO";
             } else {
-                // Si falló la red o se cayó Firebase a mitad del envío, activar Plan B automáticamente
                 guardarVotoLocal(paqueteVoto);
                 limpiarFormularioTrasVoto(duiInput, btnVotar, 'Conexión lenta o caída: ¡Tu voto se aseguró en el respaldo local del equipo! Listo para el siguiente hermano.');
             }
@@ -598,7 +640,6 @@
         alert(mensaje);
     }
 
-    // Función auxiliar que combina los votos de Firebase + los votos locales pendientes
     async function obtenerTodosLosVotosCombinados() {
         let votosNube = [];
         try {
