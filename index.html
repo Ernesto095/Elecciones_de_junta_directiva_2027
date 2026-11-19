@@ -39,8 +39,8 @@
         <hr style="margin: 25px 0; border: none; border-top: 1px solid #e2e8f0;">
 
         <h2>Selección de Candidatos</h2>
-        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 1.1rem;">
-            <strong>Nota:</strong> Use las flechas grandes para ver más opciones. Seleccione un candidato para cada cargo. Un mismo candidato no puede ser elegido dos veces.
+        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 1.05rem;">
+            <strong>Nota:</strong> Use las flechas para ver más opciones. Seleccione un candidato para cada cargo. Un mismo candidato no puede ser elegido dos veces.
         </p>
 
         <div id="voting-groups-container"></div>
@@ -50,19 +50,25 @@
 
     <!-- SECCIÓN DE ADMINISTRACIÓN -->
     <div id="sec-admin" class="section">
-        <h2 id="form-admin-title">Agregar Nuevo Candidato al Padrón</h2>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Agregue aquí a los hermanos. Estarán disponibles para todos los cargos.</p>
         
+        <!-- CAJA DE CARGA AUTOMÁTICA -->
+        <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #bae6fd;">
+            <h3 style="color: #0284c7; margin-bottom: 10px;">⚡ Carga Rápida de Candidatos</h3>
+            <p style="margin-bottom: 15px; font-size: 0.95rem; color: #0f172a;">Presiona este botón <strong>una sola vez</strong> para cargar automáticamente a los 13 hermanos en el sistema con sus fotos predeterminadas.</p>
+            <button type="button" class="btn" style="background: #0284c7; color: white; width: 100%; font-size: 1.1rem;" onclick="precargarCandidatos()">📥 Cargar 13 Candidatos Automáticamente</button>
+        </div>
+
+        <h2 id="form-admin-title">Agregar Nuevo Candidato (Manual)</h2>
         <form id="form-candidato" onsubmit="guardarCandidato(event)" style="margin-top: 15px;">
             <input type="hidden" id="cand-id">
             
             <div class="form-group">
                 <label>Nombres:</label>
-                <input type="text" id="cand-nombre" required placeholder="Ej: Juan Antonio" oninput="validateOnlyLetters(this)">
+                <input type="text" id="cand-nombre" placeholder="Ej: Juan Antonio" oninput="validateOnlyLetters(this)">
             </div>
             <div class="form-group">
                 <label>Apellidos:</label>
-                <input type="text" id="cand-apellido" required placeholder="Ej: Pérez García" oninput="validateOnlyLetters(this)">
+                <input type="text" id="cand-apellido" placeholder="Ej: Pérez García" oninput="validateOnlyLetters(this)">
             </div>
             <div class="form-group">
                 <label>Imagen del Candidato (Subir foto O cargar enlace URL):</label>
@@ -85,13 +91,17 @@
         <h2>Conteo Global y Reportes</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">Resultados consolidados en vivo y descarga de registros.</p>
         
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <div style="margin-bottom: 20px;">
             <button class="btn btn-primary" onclick="renderizarResultados()">Actualizar / Ver Conteo</button>
-            <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 12px 20px; font-size: 1rem;" onclick="descargarPDF()">Descargar Detalle por DUI</button>
-            <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 12px 20px; font-size: 1rem; background: #047857;" onclick="descargarPDFTotales()">Descargar PDF de Totales</button>
         </div>
 
         <div id="results-container" style="margin-top: 20px;"></div>
+
+        <!-- Botones de PDF al final -->
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 35px; padding-top: 20px; border-top: 1px solid var(--border); justify-content: flex-end;">
+            <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 14px 22px; font-size: 1rem;" onclick="descargarPDF()">📄 Descargar Detalle por DUI</button>
+            <button class="btn btn-success" style="margin-top: 0; width: auto; padding: 14px 22px; font-size: 1rem; background: #047857;" onclick="descargarPDFTotales()">🏆 Descargar PDF de Totales</button>
+        </div>
     </div>
 </div>
 
@@ -100,7 +110,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
-    // CONFIGURACIÓN DE FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyCVlxVjMyxXt204UP4FLxz_dEhkAUqYuQ",
         authDomain: "eleccion-junta-pastoral-2027.firebaseapp.com",
@@ -115,7 +124,7 @@
 
     const GRUPOS = ["Misionero General", "Ministro", "Diaconos", "Secretario", "Tesorero"];
     const NOMBRES_MOSTRAR = {
-        "Misionero General": "MISIONERO GENERAL",
+        "Misionero General": "MISIONERO (PRESIDENTE)",
         "Ministro": "MINISTRO",
         "Diaconos": "DIÁCONOS",
         "Secretario": "SECRETARIO",
@@ -128,6 +137,43 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const esAdmin = urlParams.get('admin') === 'true';
+
+    const candidatosPorDefecto = [
+        { nombre: "Daniel", apellido: "Aguilar", foto: "img/1.jpeg" },
+        { nombre: "Jose", apellido: "Trinidad", foto: "img/2.jpeg" },
+        { nombre: "Juan", apellido: "Juarez", foto: "img/3.jpeg" },
+        { nombre: "Luis", apellido: "Carpio", foto: "img/4.jpeg" },
+        { nombre: "Luis", apellido: "Cortez", foto: "img/5.jpeg" },
+        { nombre: "Nestor", apellido: "Santana", foto: "img/6.jpeg" },
+        { nombre: "Nieves", apellido: "Ramos", foto: "img/7.jpeg" },
+        { nombre: "Oscar", apellido: "Claros", foto: "img/8.jpeg" },
+        { nombre: "Oscar", apellido: "Iglesias", foto: "img/9.jpeg" },
+        { nombre: "Osmin", apellido: "Coreas", foto: "img/10.jpeg" },
+        { nombre: "Victor", apellido: "Navarrete", foto: "img/11.jpeg" },
+        { nombre: "Roger", apellido: "Rivas", foto: "img/12.jpeg" },
+        { nombre: "Rafael", apellido: "Aguirre", foto: "img/13.jpeg" }
+    ];
+
+    async function precargarCandidatos() {
+        if(confirm("¿Seguro que deseas cargar los 13 candidatos automáticamente? (Asegúrate de no haberlos agregado ya para evitar duplicados)")) {
+            try {
+                const batch = db.batch();
+                candidatosPorDefecto.forEach((c) => {
+                    const docRef = db.collection("candidatos").doc();
+                    batch.set(docRef, {
+                        nombre: c.nombre,
+                        apellido: c.apellido,
+                        foto: c.foto,
+                        creado: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                });
+                await batch.commit();
+                alert("¡Los 13 candidatos fueron registrados con éxito!");
+            } catch (error) {
+                alert("Hubo un error al cargarlos: " + error.message);
+            }
+        }
+    }
 
     function inicializarModo() {
         const nav = document.getElementById('main-nav');
@@ -266,7 +312,7 @@
         container.innerHTML = "";
 
         if(candidatos.length === 0) {
-            container.innerHTML = `<p style="color: var(--text-muted); font-style: italic; width: 100%;">Aún no has agregado candidatos al sistema.</p>`;
+            container.innerHTML = `<p style="color: var(--text-muted); font-style: italic; width: 100%;">Aún no hay candidatos. Puedes agregarlos usando el botón azul de arriba.</p>`;
             return;
         }
 
@@ -428,6 +474,7 @@
                 });
 
                 conteo.sort((a, b) => b.votos - a.votos);
+                let maxVotos = conteo.length > 0 ? conteo[0].votos : 0;
 
                 let html = `<div class="group-title">${tituloMostrar}</div>`;
                 
@@ -445,12 +492,20 @@
                             <tbody>
                     `;
                     conteo.forEach(c => {
-                        html += `
-                            <tr>
-                                <td><strong style="text-transform: uppercase; font-size: 1.05rem;">${c.nombre} ${c.apellido}</strong></td>
-                                <td style="text-align: center;"><span class="badge-votes">${c.votos}</span></td>
-                            </tr>
-                        `;
+                        let esGanador = (c.votos === maxVotos && maxVotos > 0);
+                        let filaEstilo = esGanador ? 'background-color: #ecfdf5; border-left: 4px solid var(--success);' : '';
+                        let trofeo = esGanador ? ' 🏆 (GANADOR)' : '';
+                        let colorTexto = esGanador ? 'color: var(--success);' : 'color: var(--text-main);';
+                        let colorBadge = esGanador ? 'background: var(--success);' : '';
+
+                        if (c.votos > 0 || esAdmin) {
+                            html += `
+                                <tr style="${filaEstilo}">
+                                    <td><strong style="text-transform: uppercase; font-size: 1.05rem; ${colorTexto}">${c.nombre} ${c.apellido}${trofeo}</strong></td>
+                                    <td style="text-align: center;"><span class="badge-votes" style="${colorBadge}">${c.votos}</span></td>
+                                </tr>
+                            `;
+                        }
                     });
                     html += `</tbody></table>`;
                 }
@@ -466,7 +521,7 @@
         const doc = new jsPDF('landscape'); 
 
         doc.setFontSize(14);
-        doc.text("Reporte Detallado de Votaciones - Elección Junta Directiva", 14, 15);
+        doc.text("Reporte Detallado de Votaciones - Elección Junta Directiva 2027", 14, 15);
         doc.setFontSize(10);
         doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 22);
 
@@ -477,7 +532,7 @@
             const dictCandidatos = {};
             candidatos.forEach(c => dictCandidatos[c.id] = `${c.nombre} ${c.apellido}`);
 
-            const tableColumn = ["DUI del Votante", "Misionero General", "Ministro", "Diáconos", "Secretario", "Tesorero"];
+            const tableColumn = ["DUI del Votante", "Misionero (Presidente)", "Ministro", "Diáconos", "Secretario", "Tesorero"];
             const tableRows = [];
 
             votosList.forEach(voto => {
@@ -536,12 +591,17 @@
                 });
 
                 conteo.sort((a, b) => b.votos - a.votos);
+                let maxVotos = conteo.length > 0 ? conteo[0].votos : 0;
 
                 const tableColumn = ["Candidato", "Total de Votos Obtenidos"];
                 const tableRows = [];
 
                 conteo.forEach(c => {
-                    tableRows.push([c.nombre, c.votos.toString()]);
+                    let nombreMostrado = c.nombre;
+                    if (c.votos === maxVotos && maxVotos > 0) {
+                        nombreMostrado += " (GANADOR)";
+                    }
+                    tableRows.push([nombreMostrado, c.votos.toString()]);
                 });
 
                 doc.setFontSize(12);
