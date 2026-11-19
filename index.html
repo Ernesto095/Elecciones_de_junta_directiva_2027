@@ -45,7 +45,7 @@
 
         <div id="voting-groups-container"></div>
 
-        <button class="btn btn-success" onclick="registrarVoto()">GUARDAR Y REGISTRAR VOTO</button>
+        <button class="btn btn-success" id="btn-registrar-voto" onclick="registrarVoto()">GUARDAR Y REGISTRAR VOTO</button>
     </div>
 
     <!-- SECCIÓN DE ADMINISTRACIÓN -->
@@ -90,6 +90,15 @@
     <div id="sec-resultados" class="section">
         <h2>Conteo Global y Reportes</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">Resultados consolidados en vivo y descarga de registros.</p>
+
+        <!-- PANEL DE RESCATE OFFLINE (SOLO APARECE SI HAY VOTOS LOCALES PENDIENTES) -->
+        <div id="offline-sync-banner" style="display: none; background: #fef3c7; border: 2px solid #f59e0b; padding: 18px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="color: #b45309; margin-bottom: 8px;">⚠️ Votos guardados sin internet en este dispositivo</h3>
+            <p style="color: #78350f; margin-bottom: 15px; font-size: 0.95rem;">
+                Tienes <strong id="offline-count">0</strong> voto(s) guardado(s) localmente porque falló la conexión. Cuando tengas internet, presiona el botón para subirlos a la nube oficial.
+            </p>
+            <button class="btn" style="background: #d97706; color: white; width: 100%;" onclick="sincronizarVotosLocales()">☁️ Sincronizar Votos Pendientes Ahora</button>
+        </div>
         
         <div style="margin-bottom: 20px;">
             <button class="btn btn-primary" onclick="renderizarResultados()">Actualizar / Ver Conteo</button>
@@ -132,7 +141,8 @@
     };
 
     let base64TempImage = "";
-    let candidatos = [];
+    // Cargar candidatos desde caché local por si arranca sin internet
+    let candidatos = JSON.parse(localStorage.getItem('candidatos_cache')) || [];
     let seleccionesActuales = {};
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -153,6 +163,86 @@
         { nombre: "Roger", apellido: "Rivas", foto: "img/12.jpeg" },
         { nombre: "Rafael", apellido: "Aguirre", foto: "img/13.jpeg" }
     ];
+
+    // --- FUNCIONES DE PLAN B (LOCALSTORAGE) ---
+    function obtenerVotosLocales() {
+        return JSON.parse(localStorage.getItem('votos_offline_pendientes')) || [];
+    }
+
+    function guardarVotoLocal(votoObj) {
+        const pendientes = obtenerVotosLocales();
+        pendientes.push(votoObj);
+        localStorage.setItem('votos_offline_pendientes', JSON.stringify(pendientes));
+        actualizarBannerOffline();
+    }
+
+    function actualizarBannerOffline() {
+        const pendientes = obtenerVotosLocales();
+        const banner = document.getElementById('offline-sync-banner');
+        const contador = document.getElementById('offline-count');
+        
+        if (banner && contador) {
+            if (pendientes.length > 0) {
+                contador.innerText = pendientes.length;
+                banner.style.display = 'block';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+    }
+
+    async function sincronizarVotosLocales() {
+        const pendientes = obtenerVotosLocales();
+        if (pendientes.length === 0) {
+            alert("No hay votos pendientes por sincronizar.");
+            return;
+        }
+
+        if (!navigator.onLine) {
+            alert("Sigues sin conexión a internet. Conéctate a una red Wi-Fi o datos móviles e intenta de nuevo.");
+            return;
+        }
+
+        let subidos = 0;
+        let duplicados = 0;
+        let fallidos = [];
+
+        for (let voto of pendientes) {
+            try {
+                const duiDoc = await db.collection("duis").doc(voto.dui).get();
+                if (duiDoc.exists) {
+                    duplicados++;
+                    continue; // Si ya votó en la nube, se descarta el duplicado
+                }
+
+                const batch = db.batch();
+                batch.set(db.collection("duis").doc(voto.dui), { 
+                    registradoEl: firebase.firestore.FieldValue.serverTimestamp(),
+                    sincronizadoOffline: true 
+                });
+                
+                const nuevoVotoRef = db.collection("votos").doc();
+                batch.set(nuevoVotoRef, {
+                    dui: voto.dui,
+                    votos: voto.votos,
+                    fecha: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await batch.commit();
+                subidos++;
+            } catch (error) {
+                fallidos.push(voto);
+            }
+        }
+
+        // Guardar solo los que hayan vuelto a fallar (normalmente será vacío)
+        localStorage.setItem('votos_offline_pendientes', JSON.stringify(fallidos));
+        actualizarBannerOffline();
+        renderizarResultados();
+
+        alert(`Sincronización terminada:\n✅ Subidos a la nube: ${subidos}\n⚠️ Ignorados por DUI repetido: ${duplicados}\n❌ Pendientes por error: ${fallidos.length}`);
+    }
+    // -----------------------------------------
 
     async function precargarCandidatos() {
         if(confirm("¿Seguro que deseas cargar los 13 candidatos automáticamente? (Asegúrate de no haberlos agregado ya para evitar duplicados)")) {
@@ -177,6 +267,7 @@
 
     function inicializarModo() {
         const nav = document.getElementById('main-nav');
+        actualizarBannerOffline();
         if (esAdmin) {
             nav.style.display = 'flex';
             document.getElementById('main-subtitle').innerText = "Panel Principal de Control y Conteo";
@@ -190,6 +281,9 @@
 
     db.collection("candidatos").onSnapshot(snapshot => {
         candidatos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Actualizar respaldo local de candidatos para uso offline
+        localStorage.setItem('candidatos_cache', JSON.stringify(candidatos));
+        
         if (document.getElementById('sec-votar').classList.contains('active')) renderizarModuloVotacion();
         if (document.getElementById('sec-admin').classList.contains('active')) renderizarModuloAdmin();
     });
@@ -203,7 +297,10 @@
 
         if(tab === 'votar') renderizarModuloVotacion();
         if(tab === 'admin') renderizarModuloAdmin();
-        if(tab === 'resultados') renderizarResultados();
+        if(tab === 'resultados') {
+            actualizarBannerOffline();
+            renderizarResultados();
+        }
     }
 
     function validateOnlyLetters(input) {
@@ -411,6 +508,7 @@
 
     async function registrarVoto() {
         const duiInput = document.getElementById('dui');
+        const btnVotar = document.getElementById('btn-registrar-voto');
         const dui = duiInput.value.trim();
 
         if (!dui || dui.length !== 10) {
@@ -426,43 +524,102 @@
             }
         }
 
+        // 1. Verificar primero si el DUI ya votó localmente en este dispositivo
+        const pendientes = obtenerVotosLocales();
+        if (pendientes.some(v => v.dui === dui)) {
+            alert('¡ERROR! Este DUI ya emitió su voto en este dispositivo. No se permite votar dos veces.');
+            return;
+        }
+
+        btnVotar.disabled = true;
+        btnVotar.innerText = "REGISTRANDO VOTO...";
+
+        const paqueteVoto = {
+            dui,
+            votos: { ...seleccionesActuales },
+            fechaLocal: new Date().toISOString()
+        };
+
+        // 2. Si el navegador detecta que no hay internet, ir directo al Plan B
+        if (!navigator.onLine) {
+            guardarVotoLocal(paqueteVoto);
+            limpiarFormularioTrasVoto(duiInput, btnVotar, '¡Voto guardado en modo SIN INTERNET (Respaldo Local)! Listo para el siguiente hermano.');
+            return;
+        }
+
+        // 3. Intentar guardar en Firebase con límite de tiempo (5 segundos) por si la red está colgada
         try {
-            const duiDoc = await db.collection("duis").doc(dui).get();
-            if (duiDoc.exists) {
-                alert('¡ERROR! Este DUI ya emitió su voto. No se permite votar dos veces.');
-                return;
-            }
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error("Tiempo de espera agotado")), 5000)
+            );
 
-            const batch = db.batch();
-            batch.set(db.collection("duis").doc(dui), { registradoEl: firebase.firestore.FieldValue.serverTimestamp() });
-            
-            const nuevoVotoRef = db.collection("votos").doc();
-            batch.set(nuevoVotoRef, {
-                dui,
-                votos: { ...seleccionesActuales },
-                fecha: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            const firebaseProcess = async () => {
+                const duiDoc = await db.collection("duis").doc(dui).get();
+                if (duiDoc.exists) {
+                    throw new Error("DUI_DUPLICADO");
+                }
 
-            await batch.commit();
+                const batch = db.batch();
+                batch.set(db.collection("duis").doc(dui), { registradoEl: firebase.firestore.FieldValue.serverTimestamp() });
+                
+                const nuevoVotoRef = db.collection("votos").doc();
+                batch.set(nuevoVotoRef, {
+                    dui,
+                    votos: { ...seleccionesActuales },
+                    fecha: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-            duiInput.value = "";
-            renderizarModuloVotacion();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            alert('¡Voto registrado con éxito! Sistema limpio y listo para el siguiente hermano.');
+                await batch.commit();
+            };
+
+            await Promise.race([firebaseProcess(), timeoutPromise]);
+
+            limpiarFormularioTrasVoto(duiInput, btnVotar, '¡Voto registrado con éxito! Sistema limpio y listo para el siguiente hermano.');
 
         } catch (error) {
-            alert("Error al guardar voto en la base de datos: " + error.message);
+            if (error.message === "DUI_DUPLICADO") {
+                alert('¡ERROR! Este DUI ya emitió su voto. No se permite votar dos veces.');
+                btnVotar.disabled = false;
+                btnVotar.innerText = "GUARDAR Y REGISTRAR VOTO";
+            } else {
+                // Si falló la red o se cayó Firebase a mitad del envío, activar Plan B automáticamente
+                guardarVotoLocal(paqueteVoto);
+                limpiarFormularioTrasVoto(duiInput, btnVotar, 'Conexión lenta o caída: ¡Tu voto se aseguró en el respaldo local del equipo! Listo para el siguiente hermano.');
+            }
         }
+    }
+
+    function limpiarFormularioTrasVoto(duiInput, btnVotar, mensaje) {
+        duiInput.value = "";
+        renderizarModuloVotacion();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        btnVotar.disabled = false;
+        btnVotar.innerText = "GUARDAR Y REGISTRAR VOTO";
+        alert(mensaje);
+    }
+
+    // Función auxiliar que combina los votos de Firebase + los votos locales pendientes
+    async function obtenerTodosLosVotosCombinados() {
+        let votosNube = [];
+        try {
+            if (navigator.onLine) {
+                const snapshot = await db.collection("votos").get();
+                votosNube = snapshot.docs.map(doc => doc.data());
+            }
+        } catch (e) {
+            console.warn("No se pudo leer Firebase, mostrando solo datos locales.");
+        }
+        const votosLocales = obtenerVotosLocales();
+        return [...votosNube, ...votosLocales];
     }
 
     async function renderizarResultados() {
         const container = document.getElementById('results-container');
         container.innerHTML = "<p style='color: var(--text-muted);'>Cargando resultados globales...</p>";
+        actualizarBannerOffline();
 
         try {
-            const snapshot = await db.collection("votos").get();
-            const votosGuardados = snapshot.docs.map(doc => doc.data());
-
+            const votosGuardados = await obtenerTodosLosVotosCombinados();
             container.innerHTML = "";
 
             GRUPOS.forEach(grupo => {
@@ -526,8 +683,7 @@
         doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 22);
 
         try {
-            const snapshot = await db.collection("votos").get();
-            const votosList = snapshot.docs.map(doc => doc.data());
+            const votosList = await obtenerTodosLosVotosCombinados();
 
             const dictCandidatos = {};
             candidatos.forEach(c => dictCandidatos[c.id] = `${c.nombre} ${c.apellido}`);
@@ -572,9 +728,7 @@
         doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 22);
 
         try {
-            const snapshot = await db.collection("votos").get();
-            const votosList = snapshot.docs.map(doc => doc.data());
-            
+            const votosList = await obtenerTodosLosVotosCombinados();
             const totalVotantes = votosList.length;
 
             doc.setFontSize(12);
