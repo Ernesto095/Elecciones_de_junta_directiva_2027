@@ -436,13 +436,47 @@
     }
 
     // Mezclar orden de candidatos (Algoritmo Fisher-Yates)
-    function mezclarLista(array) {
+    function mezclarArray(array) {
         let copia = [...array];
         for (let i = copia.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [copia[i], copia[j]] = [copia[j], copia[i]];
         }
         return copia;
+    }
+
+    // Función que pone al frente a los prioritarios (en desorden) y al final a los 7 de las fotos (también en desorden)
+    function generarOrdenGrupo(listaCandidatos) {
+        const segundosPlanos = [
+            "luis cortez",
+            "nieves ramos",
+            "oscar claros",
+            "oscar iglesias",
+            "victor navarrete",
+            "roger rivas",
+            "rafael aguirre"
+        ];
+
+        const principales = [];
+        const secundarios = [];
+
+        listaCandidatos.forEach(c => {
+            const nombreCompleto = `${c.nombre} ${c.apellido}`
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim();
+
+            if (segundosPlanos.includes(nombreCompleto)) {
+                secundarios.push(c);
+            } else {
+                principales.push(c);
+            }
+        });
+
+        // Se mezclan ambos grupos por separado para que siempre salgan en desorden,
+        // pero los primeros 6 siempre ocupen las primeras posiciones.
+        return [...mezclarArray(principales), ...mezclarArray(secundarios)];
     }
 
     function renderizarModuloVotacion() {
@@ -455,7 +489,7 @@
             const prefix = grupo.replace(/\s+/g, '');
             const tituloMostrar = NOMBRES_MOSTRAR[grupo] || grupo;
             
-            ordenPorGrupo[grupo] = mezclarLista(candidatos);
+            ordenPorGrupo[grupo] = generarOrdenGrupo(candidatos);
             
             let html = `<div class="group-title">${tituloMostrar}</div>`;
             
