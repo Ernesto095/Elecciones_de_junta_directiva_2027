@@ -22,14 +22,15 @@
 body {
     background-color: var(--bg);
     color: var(--text-main);
-    padding: 15px;
+    padding: 15px 20px;
     display: flex;
     justify-content: center;
 }
 
+/* Contenedor ampliado para aprovechar casi todo el ancho de la pantalla */
 .container {
-    width: 100%;
-    max-width: 1000px; 
+    width: 97%;
+    max-width: 1600px; 
     background: var(--card-bg);
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -40,7 +41,7 @@ body {
 header {
     background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
     color: white;
-    padding: 30px 15px;
+    padding: 30px 20px;
     text-align: center;
 }
 
@@ -53,7 +54,7 @@ header {
 }
 
 .header-logo-img {
-    max-width: 110px;
+    max-width: 115px;
     width: auto;
     height: auto;
     display: block;
@@ -62,7 +63,7 @@ header {
 }
 
 #main-title {
-    font-size: 1.75rem;
+    font-size: 1.9rem;
     font-weight: 800;
     margin-bottom: 10px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -71,9 +72,9 @@ header {
 #main-subtitle {
     display: inline-block;
     background: rgba(255, 255, 255, 0.2);
-    padding: 6px 18px;
+    padding: 6px 20px;
     border-radius: 20px;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
     backdrop-filter: blur(4px);
 }
@@ -82,7 +83,7 @@ header {
 nav {
     display: flex;
     gap: 10px;
-    padding: 15px;
+    padding: 15px 25px;
     background: #f8fafc;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
@@ -90,12 +91,13 @@ nav {
 
 .nav-btn {
     flex: 1;
-    min-width: 140px;
-    padding: 12px;
+    min-width: 150px;
+    padding: 14px;
     border: 1px solid var(--border);
     background: white;
     color: var(--text-main);
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1rem;
     border-radius: 8px;
     cursor: pointer;
     transition: 0.2s;
@@ -110,7 +112,7 @@ nav {
 /* Secciones y Formularios */
 .section {
     display: none;
-    padding: 25px;
+    padding: 25px 30px;
 }
 
 .section.active {
@@ -123,20 +125,20 @@ nav {
 
 label {
     display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
+    margin-bottom: 8px;
+    font-weight: 700;
     color: #334155;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
 }
 
 input[type="text"], 
 select, 
 input[type="file"] {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     outline: none;
 }
 
@@ -148,19 +150,19 @@ select:focus {
 
 /* Botones */
 .btn {
-    padding: 14px 20px;
+    padding: 15px 22px;
     border: none;
     border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
     transition: 0.2s;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
 }
 
 .btn-primary { background: var(--primary); color: white; }
 .btn-primary:hover { background: #1e3a8a; }
 
-.btn-success { background: var(--success); color: white; width: 100%; margin-top: 20px; font-size: 1.15rem; padding: 18px; }
+.btn-success { background: var(--success); color: white; width: 100%; margin-top: 25px; font-size: 1.25rem; padding: 20px; }
 .btn-success:hover { background: #059669; }
 
 .btn-danger { background: var(--danger); color: white; }
@@ -171,31 +173,32 @@ select:focus {
 .group-title {
     background: #eff6ff;
     color: var(--primary);
-    padding: 12px 16px;
-    font-size: 1.25rem;
+    padding: 14px 18px;
+    font-size: 1.35rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-left: 6px solid var(--primary);
+    border-left: 7px solid var(--primary);
     border-radius: 6px;
-    margin: 30px 0 15px 0;
+    margin: 35px 0 18px 0;
 }
 
+/* Cuadrícula de 5 columnas grandes en pantallas de computadora */
 .admin-grid,
 .candidates-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
     background: #f8fafc;
-    padding: 15px;
+    padding: 20px;
     border-radius: 12px;
     border: 1px solid var(--border);
 }
 
 .candidate-card {
     border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 14px;
+    padding: 15px;
     text-align: center;
     cursor: pointer;
     transition: all 0.25s ease;
@@ -205,31 +208,32 @@ select:focus {
 
 .candidate-card:hover {
     border-color: var(--primary-light);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .candidate-card.selected {
     border-color: var(--success);
-    border-width: 4px;
+    border-width: 5px;
     background: #ecfdf5;
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
     transform: scale(1.02);
 }
 
 .candidate-card.selected::after {
     content: '✔';
     position: absolute;
-    top: -10px;
-    right: -10px;
+    top: -12px;
+    right: -12px;
     background: var(--success);
     color: white;
     border-radius: 50%;
-    width: 40px; 
-    height: 40px;
+    width: 46px; 
+    height: 46px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 25px;
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     border: 3px solid white;
@@ -242,19 +246,21 @@ select:focus {
     background: #f8fafc;
 }
 
+/* Imágenes más altas y grandes para los hermanos mayores */
 .candidate-img {
     width: 100%;
-    height: 210px; 
+    height: 265px; 
     object-fit: cover;
     object-position: top center;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    border-radius: 10px;
+    margin-bottom: 14px;
     background-color: #f1f5f9;
     border: 1px solid var(--border);
 }
 
+/* Nombres más grandes y legibles */
 .candidate-name {
-    font-size: 1.15rem; 
+    font-size: 1.35rem; 
     font-weight: 800;
     text-transform: uppercase;
     color: var(--text-main);
@@ -270,6 +276,7 @@ select:focus {
 .admin-card:hover {
     transform: none;
     border-color: var(--border);
+    box-shadow: none;
 }
 
 /* Tablas de Resultados */
@@ -281,35 +288,53 @@ select:focus {
 
 .results-table th {
     background: #f8fafc;
-    padding: 12px;
+    padding: 14px;
     border-bottom: 2px solid var(--border);
     text-align: left;
     color: #475569;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 .results-table td {
-    padding: 12px;
+    padding: 14px;
     border-bottom: 1px solid var(--border);
     text-align: left;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 .badge-votes {
     background: var(--primary);
     color: white;
-    padding: 5px 14px;
+    padding: 6px 16px;
     border-radius: 20px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
 }
 
 /* =========================================
-   AJUSTES ESPECÍFICOS PARA PANTALLAS DE CELULAR 
+   AJUSTES RESPONSIVOS PARA TABLETS Y CELULARES
    ========================================= */
+@media (max-width: 1150px) {
+    .admin-grid,
+    .candidates-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .admin-grid,
+    .candidates-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 8px;
+    }
+
+    .container {
+        width: 100%;
     }
     
     .section {
@@ -317,11 +342,11 @@ select:focus {
     }
 
     #main-title {
-        font-size: 1.4rem;
+        font-size: 1.45rem;
     }
 
     .group-title {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         padding: 10px 12px;
     }
 
@@ -338,11 +363,11 @@ select:focus {
     }
 
     .candidate-img {
-        height: 165px;
+        height: 175px;
     }
 
     .candidate-name {
-        font-size: 1rem;
+        font-size: 1.05rem;
     }
 
     .candidate-card.selected::after {
