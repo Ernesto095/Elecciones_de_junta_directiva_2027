@@ -445,9 +445,9 @@
         return copia;
     }
 
-    // Función que pone al frente a los prioritarios (en desorden) y al final a los 7 de las fotos (también en desorden)
+    // Función que intercala en desorden: 2 nuevos, 1 viejo, 1 nuevo, 2 viejos, etc.
     function generarOrdenGrupo(listaCandidatos) {
-        const segundosPlanos = [
+        const viejosNombres = [
             "luis cortez",
             "nieves ramos",
             "oscar claros",
@@ -457,8 +457,8 @@
             "rafael aguirre"
         ];
 
-        const principales = [];
-        const secundarios = [];
+        const nuevos = [];
+        const viejos = [];
 
         listaCandidatos.forEach(c => {
             const nombreCompleto = `${c.nombre} ${c.apellido}`
@@ -467,16 +467,43 @@
                 .replace(/[\u0300-\u036f]/g, "")
                 .trim();
 
-            if (segundosPlanos.includes(nombreCompleto)) {
-                secundarios.push(c);
+            if (viejosNombres.includes(nombreCompleto)) {
+                viejos.push(c);
             } else {
-                principales.push(c);
+                nuevos.push(c);
             }
         });
 
-        // Se mezclan ambos grupos por separado para que siempre salgan en desorden,
-        // pero los primeros 6 siempre ocupen las primeras posiciones.
-        return [...mezclarArray(principales), ...mezclarArray(secundarios)];
+        // Mezclamos ambos grupos al azar para que en cada cargo salgan distintos hermanos
+        const nuevosMezclados = mezclarArray(nuevos);
+        const viejosMezclados = mezclarArray(viejos);
+
+        // Patrón intercalado: 2 nuevos, 1 viejo, 1 nuevo, 2 viejos, y luego alternando
+        const patron = [
+            'nuevo', 'nuevo', 
+            'viejo', 
+            'nuevo', 
+            'viejo', 'viejo', 
+            'nuevo', 'viejo', 'nuevo', 'viejo', 'nuevo', 'viejo', 'viejo'
+        ];
+
+        const resultado = [];
+        let iNuevo = 0;
+        let iViejo = 0;
+
+        for (let tipo of patron) {
+            if (tipo === 'nuevo' && iNuevo < nuevosMezclados.length) {
+                resultado.push(nuevosMezclados[iNuevo++]);
+            } else if (tipo === 'viejo' && iViejo < viejosMezclados.length) {
+                resultado.push(viejosMezclados[iViejo++]);
+            }
+        }
+
+        // Por si en el futuro agregan más candidatos manualmente, los añade al final
+        while (iNuevo < nuevosMezclados.length) resultado.push(nuevosMezclados[iNuevo++]);
+        while (iViejo < viejosMezclados.length) resultado.push(viejosMezclados[iViejo++]);
+
+        return resultado;
     }
 
     function renderizarModuloVotacion() {
