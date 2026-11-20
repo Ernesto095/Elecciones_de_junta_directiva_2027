@@ -40,7 +40,7 @@
 
         <h2>Selección de Candidatos</h2>
         <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 1.05rem;">
-            <strong>Nota:</strong> Use las flechas para ver más opciones. Seleccione un candidato para cada cargo. Un mismo candidato no puede ser elegido dos veces.
+            <strong>Nota:</strong> Toque la foto del candidato que desea elegir para cada cargo. Un mismo candidato no puede ser elegido dos veces.
         </p>
 
         <div id="voting-groups-container"></div>
@@ -91,7 +91,7 @@
         <h2>Conteo Global y Reportes</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">Resultados consolidados en vivo y descarga de registros.</p>
 
-        <!-- PANEL DE RESCATE OFFLINE (SOLO APARECE SI HAY VOTOS LOCALES PENDIENTES) -->
+        <!-- PANEL DE RESCATE OFFLINE -->
         <div id="offline-sync-banner" style="display: none; background: #fef3c7; border: 2px solid #f59e0b; padding: 18px; border-radius: 10px; margin-bottom: 25px;">
             <h3 style="color: #b45309; margin-bottom: 8px;">⚠️ Votos guardados sin internet en este dispositivo</h3>
             <p style="color: #78350f; margin-bottom: 15px; font-size: 0.95rem;">
@@ -143,7 +143,7 @@
     let base64TempImage = "";
     let candidatos = JSON.parse(localStorage.getItem('candidatos_cache')) || [];
     let seleccionesActuales = {};
-    let ordenPorGrupo = {}; // Guardará el orden variado de cada cargo
+    let ordenPorGrupo = {};
 
     const urlParams = new URLSearchParams(window.location.search);
     const esAdmin = urlParams.get('admin') === 'true';
@@ -241,7 +241,6 @@
 
         alert(`Sincronización terminada:\n✅ Subidos a la nube: ${subidos}\n⚠️ Ignorados por DUI repetido: ${duplicados}\n❌ Pendientes por error: ${fallidos.length}`);
     }
-    // -----------------------------------------
 
     async function precargarCandidatos() {
         if(confirm("¿Seguro que deseas cargar los 13 candidatos automáticamente? (Asegúrate de no haberlos agregado ya para evitar duplicados)")) {
@@ -436,12 +435,6 @@
         });
     }
 
-    function scrollCarousel(id, direction) {
-        const container = document.getElementById(id);
-        const scrollAmount = container.clientWidth; 
-        container.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
-    }
-
     // Mezclar orden de candidatos (Algoritmo Fisher-Yates)
     function mezclarLista(array) {
         let copia = [...array];
@@ -469,11 +462,7 @@
             if(candidatos.length === 0) {
                 html += `<p style="color: var(--text-muted); font-style: italic;">Aún no hay candidatos en el sistema. El administrador debe agregarlos primero.</p>`;
             } else {
-                html += `
-                <div class="carousel-container">
-                    <button class="nav-arrow" onclick="scrollCarousel('carousel-${prefix}', -1)">❮</button>
-                    <div class="candidates-carousel" id="carousel-${prefix}">
-                `;
+                html += `<div class="candidates-grid" id="grid-${prefix}">`;
                 ordenPorGrupo[grupo].forEach(c => {
                     html += `
                         <div class="candidate-card" id="card-${prefix}-${c.id}" onclick="seleccionarCandidato('${grupo}', '${c.id}')">
@@ -482,11 +471,7 @@
                         </div>
                     `;
                 });
-                html += `
-                    </div>
-                    <button class="nav-arrow" onclick="scrollCarousel('carousel-${prefix}', 1)">❯</button>
-                </div>
-                `;
+                html += `</div>`;
             }
             container.innerHTML += html;
         });
@@ -517,8 +502,8 @@
         
         GRUPOS.forEach(grupo => {
             const prefix = grupo.replace(/\s+/g, '');
-            const carousel = document.getElementById(`carousel-${prefix}`);
-            if (!carousel) return;
+            const grid = document.getElementById(`grid-${prefix}`);
+            if (!grid) return;
 
             const listaBase = ordenPorGrupo[grupo] || candidatos;
             let disponibles = [];
@@ -533,7 +518,7 @@
                 }
             });
 
-            // Reordenar en pantalla: primero los disponibles (en su orden variado) y al final los grises
+            // Reordenar en cuadrícula: primero los disponibles y al final los grises
             [...disponibles, ...bloqueados].forEach(c => {
                 const card = document.getElementById(`card-${prefix}-${c.id}`);
                 if (card) {
@@ -542,13 +527,9 @@
                     } else {
                         card.classList.remove('disabled');
                     }
-                    carousel.appendChild(card);
+                    grid.appendChild(card);
                 }
             });
-
-            if (!seleccionesActuales[grupo]) {
-                carousel.scrollTo({ left: 0, behavior: 'smooth' });
-            }
         });
     }
 

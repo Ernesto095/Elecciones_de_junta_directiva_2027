@@ -11,7 +11,7 @@
     --danger: #ef4444;
 }
 
-/* Reset y Base (Corregido el selector universal) */
+/* Reset y Base */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -181,70 +181,26 @@ select:focus {
     margin: 30px 0 15px 0;
 }
 
-.admin-grid {
+.admin-grid,
+.candidates-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
     gap: 15px;
-}
-
-.carousel-container {
-    display: flex;
-    align-items: center;
-    position: relative;
     background: #f8fafc;
-    padding: 12px;
+    padding: 15px;
     border-radius: 12px;
     border: 1px solid var(--border);
-}
-
-.nav-arrow {
-    background: var(--primary);
-    color: white;
-    border: none;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 2;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-    flex-shrink: 0;
-    transition: 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.nav-arrow:hover { background: var(--primary-light); }
-.nav-arrow:active { transform: scale(0.9); }
-
-.candidates-carousel {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 15px;
-    scroll-behavior: smooth;
-    width: 100%;
-    padding: 10px 8px;
-    scrollbar-width: none; 
-}
-
-.candidates-carousel::-webkit-scrollbar {
-    display: none; 
 }
 
 .candidate-card {
     border: 2px solid var(--border);
     border-radius: 12px;
-    padding: 15px;
+    padding: 12px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     background: white;
     position: relative;
-    flex: 0 0 calc(33.333% - 10px); 
-    min-width: 220px; 
-    scroll-snap-align: center;
 }
 
 .candidate-card:hover {
@@ -263,17 +219,17 @@ select:focus {
 .candidate-card.selected::after {
     content: '✔';
     position: absolute;
-    top: -12px;
-    right: -12px;
+    top: -10px;
+    right: -10px;
     background: var(--success);
     color: white;
     border-radius: 50%;
-    width: 45px; 
-    height: 45px;
+    width: 40px; 
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     border: 3px solid white;
@@ -288,17 +244,17 @@ select:focus {
 
 .candidate-img {
     width: 100%;
-    height: 230px; 
+    height: 210px; 
     object-fit: cover;
     object-position: top center;
     border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     background-color: #f1f5f9;
     border: 1px solid var(--border);
 }
 
 .candidate-name {
-    font-size: 1.25rem; 
+    font-size: 1.15rem; 
     font-weight: 800;
     text-transform: uppercase;
     color: var(--text-main);
@@ -308,8 +264,6 @@ select:focus {
 }
 
 .admin-card {
-    flex: unset;
-    min-width: unset;
     cursor: default;
 }
 
@@ -371,42 +325,31 @@ select:focus {
         padding: 10px 12px;
     }
 
-    .carousel-container {
-        padding: 8px 4px;
-    }
-
-    /* Flechas un poco más compactas para dejar espacio a la foto */
-    .nav-arrow {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-    }
-
-    .candidates-carousel {
-        padding: 10px 4px;
+    /* En celular: 2 tarjetas por fila para ver todos los candidatos rápido */
+    .admin-grid,
+    .candidates-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+        padding: 10px;
     }
 
-    /* En celular: 1 sola tarjeta ocupa el 100% del espacio disponible entre las flechas */
     .candidate-card {
-        flex: 0 0 100%;
-        min-width: 0; /* Permite que se adapte a cualquier ancho de teléfono sin cortarse */
-        padding: 12px;
+        padding: 10px;
     }
 
     .candidate-img {
-        height: 220px;
+        height: 165px;
     }
 
     .candidate-name {
-        font-size: 1.15rem;
+        font-size: 1rem;
     }
 
     .candidate-card.selected::after {
-        top: 5px;
-        right: 5px;
-        width: 38px;
-        height: 38px;
-        font-size: 20px;
+        top: -6px;
+        right: -6px;
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
     }
 }
