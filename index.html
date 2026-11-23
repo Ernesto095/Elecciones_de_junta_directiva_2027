@@ -95,9 +95,9 @@
         <div id="offline-sync-banner" style="display: none; background: #fef3c7; border: 2px solid #f59e0b; padding: 18px; border-radius: 10px; margin-bottom: 25px;">
             <h3 style="color: #b45309; margin-bottom: 8px;">⚠️ Votos guardados sin internet en este dispositivo</h3>
             <p style="color: #78350f; margin-bottom: 15px; font-size: 0.95rem;">
-                Tienes <strong id="offline-count">0</strong> voto(s) guardado(s) localmente porque falló la conexión. Cuando tengas internet, presiona el botón para subirlos a la nube oficial.
+                Tienes <strong id="offline-count">0</strong> voto(s) guardado(s) localmente porque falló la conexión. Se subirán automáticamente al recuperar internet, o puedes forzarlo ahora:
             </p>
-            <button class="btn" style="background: #d97706; color: white; width: 100%;" onclick="sincronizarVotosLocales()">☁️ Sincronizar Votos Pendientes Ahora</button>
+            <button class="btn" style="background: #d97706; color: white; width: 100%;" onclick="sincronizarVotosLocales(false)">☁️ Sincronizar Votos Pendientes Ahora</button>
         </div>
         
         <div style="margin-bottom: 20px;">
@@ -144,6 +144,7 @@
     let candidatos = JSON.parse(localStorage.getItem('candidatos_cache')) || [];
     let seleccionesActuales = {};
     let ordenPorGrupo = {};
+    let sincronizandoAhora = false;
 
     const urlParams = new URLSearchParams(window.location.search);
     const esAdmin = urlParams.get('admin') === 'true';
@@ -164,7 +165,7 @@
         { nombre: "Rafael", apellido: "Aguirre", foto: "img/13.jpeg" }
     ];
 
-    // --- FUNCIONES DE PLAN B (LOCALSTORAGE) ---
+    // --- FUNCIONES DE PLAN B (LOCALSTORAGE Y SINCRONIZACIÓN AUTOMÁTICA) ---
     function obtenerVotosLocales() {
         return JSON.parse(localStorage.getItem('votos_offline_pendientes')) || [];
     }
@@ -191,18 +192,21 @@
         }
     }
 
-    async function sincronizarVotosLocales() {
+    async function sincronizarVotosLocales(esAutomatico = false) {
+        if (sincronizandoAhora) return;
+
         const pendientes = obtenerVotosLocales();
         if (pendientes.length === 0) {
-            alert("No hay votos pendientes por sincronizar.");
+            if (!esAutomatico) alert("No hay votos pendientes por sincronizar.");
             return;
         }
 
         if (!navigator.onLine) {
-            alert("Sigues sin conexión a internet. Conéctate a una red Wi-Fi o datos móviles e intenta de nuevo.");
+            if (!esAutomatico) alert("Sigues sin conexión a internet. Conéctate a una red Wi-Fi o datos móviles e intenta de nuevo.");
             return;
         }
 
+        sincronizandoAhora = true;
         let subidos = 0;
         let duplicados = 0;
         let fallidos = [];
@@ -237,10 +241,30 @@
 
         localStorage.setItem('votos_offline_pendientes', JSON.stringify(fallidos));
         actualizarBannerOffline();
-        renderizarResultados();
+        sincronizandoAhora = false;
 
-        alert(`Sincronización terminada:\n✅ Subidos a la nube: ${subidos}\n⚠️ Ignorados por DUI repetido: ${duplicados}\n❌ Pendientes por error: ${fallidos.length}`);
+        if (document.getElementById('sec-resultados').classList.contains('active')) {
+            renderizarResultados();
+        }
+
+        if (!esAutomatico) {
+            alert(`Sincronización terminada:\n✅ Subidos a la nube: ${subidos}\n⚠️ Ignorados por DUI repetido: ${duplicados}\n❌ Pendientes por error: ${fallidos.length}`);
+        } else if (subidos > 0) {
+            console.log(`☁️ Sincronización automática: ${subidos} voto(s) subido(s) a Firebase.`);
+        }
     }
+
+    // Detecta el instante exacto en que vuelve el internet
+    window.addEventListener('online', () => {
+        sincronizarVotosLocales(true);
+    });
+
+    // Respaldo: revisa cada 30 segundos si hay internet y votos pendientes
+    setInterval(() => {
+        if (navigator.onLine && obtenerVotosLocales().length > 0) {
+            sincronizarVotosLocales(true);
+        }
+    }, 30000);
 
     async function precargarCandidatos() {
         if(confirm("¿Seguro que deseas cargar los 13 candidatos automáticamente? (Asegúrate de no haberlos agregado ya para evitar duplicados)")) {
@@ -266,6 +290,10 @@
     function inicializarModo() {
         const nav = document.getElementById('main-nav');
         actualizarBannerOffline();
+
+        if (navigator.onLine) {
+            sincronizarVotosLocales(true);
+        }
 
         if (candidatos.length === 0) {
             renderizarModuloVotacion();
@@ -297,6 +325,15 @@
             if (document.getElementById('sec-votar').classList.contains('active')) renderizarModuloVotacion();
         }
     );
+
+    // Escucha en vivo de nuevos votos para que el Admin vea los resultados al instante
+    if (esAdmin) {
+        db.collection("votos").onSnapshot(() => {
+            if (document.getElementById('sec-resultados').classList.contains('active')) {
+                renderizarResultados();
+            }
+        });
+    }
 
     function switchTab(tab, event) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -474,11 +511,9 @@
             }
         });
 
-        // Mezclamos ambos grupos al azar para que en cada cargo salgan distintos hermanos
         const nuevosMezclados = mezclarArray(nuevos);
         const viejosMezclados = mezclarArray(viejos);
 
-        // Patrón intercalado: 2 nuevos, 1 viejo, 1 nuevo, 2 viejos, y luego alternando
         const patron = [
             'nuevo', 'nuevo', 
             'viejo', 
@@ -499,7 +534,6 @@
             }
         }
 
-        // Por si en el futuro agregan más candidatos manualmente, los añade al final
         while (iNuevo < nuevosMezclados.length) resultado.push(nuevosMezclados[iNuevo++]);
         while (iViejo < viejosMezclados.length) resultado.push(viejosMezclados[iViejo++]);
 
@@ -579,7 +613,6 @@
                 }
             });
 
-            // Reordenar en cuadrícula: primero los disponibles y al final los grises
             [...disponibles, ...bloqueados].forEach(c => {
                 const card = document.getElementById(`card-${prefix}-${c.id}`);
                 if (card) {
@@ -629,7 +662,7 @@
 
         if (!navigator.onLine) {
             guardarVotoLocal(paqueteVoto);
-            limpiarFormularioTrasVoto(duiInput, btnVotar, '¡Voto guardado en modo SIN INTERNET (Respaldo Local)! Listo para el siguiente hermano.');
+            limpiarFormularioTrasVoto(duiInput, btnVotar, '¡Voto guardado en modo SIN INTERNET (Respaldo Local)! Se subirá automáticamente al volver la señal. Listo para el siguiente hermano.');
             return;
         }
 
@@ -668,7 +701,7 @@
                 btnVotar.innerText = "GUARDAR Y REGISTRAR VOTO";
             } else {
                 guardarVotoLocal(paqueteVoto);
-                limpiarFormularioTrasVoto(duiInput, btnVotar, 'Conexión lenta o caída: ¡Tu voto se aseguró en el respaldo local del equipo! Listo para el siguiente hermano.');
+                limpiarFormularioTrasVoto(duiInput, btnVotar, 'Conexión lenta o caída: ¡Tu voto se aseguró en el respaldo local y se subirá solo al volver el internet! Listo para el siguiente hermano.');
             }
         }
     }
