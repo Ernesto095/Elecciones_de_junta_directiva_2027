@@ -1,14 +1,14 @@
-/* Variables de color y diseño */
+/* Variables de color y diseño (Tema Azul para Plan A) */
 :root {
     --primary: #1e40af;
     --primary-light: #3b82f6;
     --bg: #f1f5f9;
     --card-bg: #ffffff;
     --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border: #cbd5e1;
+    --text-muted: #475569;
+    --border: #bfdbfe;
     --success: #10b981;
-    --danger: #ef4444;
+    --danger: #dc2626;
 }
 
 /* Reset y Base */
@@ -33,13 +33,14 @@ body {
     max-width: 1600px; 
     background: var(--card-bg);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(30, 64, 175, 0.12);
     overflow: hidden;
+    border: 1px solid #dbeafe;
 }
 
-/* Encabezado */
+/* Encabezado en degradado Azul */
 header {
-    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
+    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 55%, #60a5fa 100%);
     color: white;
     padding: 30px 20px;
     text-align: center;
@@ -66,12 +67,12 @@ header {
     font-size: 1.9rem;
     font-weight: 800;
     margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 #main-subtitle {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.22);
     padding: 6px 20px;
     border-radius: 20px;
     font-size: 1rem;
@@ -84,7 +85,7 @@ nav {
     display: flex;
     gap: 10px;
     padding: 15px 25px;
-    background: #f8fafc;
+    background: #eff6ff;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
 }
@@ -93,7 +94,7 @@ nav {
     flex: 1;
     min-width: 150px;
     padding: 14px;
-    border: 1px solid var(--border);
+    border: 1px solid #cbd5e1;
     background: white;
     color: var(--text-main);
     font-weight: 700;
@@ -127,7 +128,7 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: 700;
-    color: #334155;
+    color: #1e293b;
     font-size: 1.15rem;
 }
 
@@ -136,16 +137,17 @@ select,
 input[type="file"] {
     width: 100%;
     padding: 15px;
-    border: 1px solid var(--border);
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
     font-size: 1.15rem;
     outline: none;
+    background: white;
 }
 
 input[type="text"]:focus, 
 select:focus {
     border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 /* Botones */
@@ -162,23 +164,95 @@ select:focus {
 .btn-primary { background: var(--primary); color: white; }
 .btn-primary:hover { background: #1e3a8a; }
 
-.btn-success { background: var(--success); color: white; width: 100%; margin-top: 25px; font-size: 1.25rem; padding: 20px; }
+.btn-success { background: #10b981; color: white; width: 100%; margin-top: 25px; font-size: 1.25rem; padding: 20px; }
 .btn-success:hover { background: #059669; }
 
 .btn-danger { background: var(--danger); color: white; }
-.btn-edit { background: #f59e0b; color: white; }
+.btn-edit { background: #d97706; color: white; }
 .cancel-btn { background: #64748b; color: white; display: none; margin-left: 10px; }
+
+/* Sección de los 6 Botones de PDF */
+.pdf-actions-wrapper {
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 2px solid var(--border);
+}
+
+.pdf-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.btn-pdf-cargo {
+    background: #1d4ed8;
+    color: white;
+    font-size: 0.98rem;
+    padding: 14px 16px;
+    text-align: left;
+}
+
+.btn-pdf-cargo:hover {
+    background: #1e40af;
+}
+
+.btn-pdf-general {
+    background: #0284c7;
+    color: white;
+    font-size: 1rem;
+    padding: 15px 18px;
+}
+
+.btn-pdf-general:hover {
+    background: #0369a1;
+}
+
+.btn-pdf-totales {
+    background: #1e3a8a;
+    color: white;
+    font-size: 1rem;
+    padding: 15px 18px;
+}
+
+.btn-pdf-totales:hover {
+    background: #172554;
+}
+
+/* Banner de Votación Activa */
+.round-banner {
+    background: #dbeafe;
+    border: 2px solid #1e40af;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.round-banner-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e40af;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.round-banner-title {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #1e3a8a;
+    margin-top: 4px;
+}
 
 /* Contenedores de Candidatos y Votación */
 .group-title {
-    background: #eff6ff;
-    color: var(--primary);
+    background: #dbeafe;
+    color: #1e3a8a;
     padding: 14px 18px;
     font-size: 1.35rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-left: 7px solid var(--primary);
+    border-left: 7px solid #1e40af;
     border-radius: 6px;
     margin: 35px 0 18px 0;
 }
@@ -192,11 +266,11 @@ select:focus {
     background: #f8fafc;
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid var(--border);
+    border: 1px solid #bfdbfe;
 }
 
 .candidate-card {
-    border: 2px solid var(--border);
+    border: 2px solid #cbd5e1;
     border-radius: 14px;
     padding: 15px;
     text-align: center;
@@ -209,14 +283,15 @@ select:focus {
 .candidate-card:hover {
     border-color: var(--primary-light);
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 15px rgba(30, 64, 175, 0.12);
 }
 
+/* Selección en Verde Esmeralda para resaltar claramente sobre el tema azul */
 .candidate-card.selected {
     border-color: var(--success);
     border-width: 5px;
     background: #ecfdf5;
-    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.28);
     transform: scale(1.02);
 }
 
@@ -239,13 +314,6 @@ select:focus {
     border: 3px solid white;
 }
 
-.candidate-card.disabled {
-    opacity: 0.35;
-    pointer-events: none;
-    filter: grayscale(100%);
-    background: #f8fafc;
-}
-
 /* Imágenes más altas y grandes para los hermanos mayores */
 .candidate-img {
     width: 100%;
@@ -255,7 +323,7 @@ select:focus {
     border-radius: 10px;
     margin-bottom: 14px;
     background-color: #f1f5f9;
-    border: 1px solid var(--border);
+    border: 1px solid #cbd5e1;
 }
 
 /* Nombres más grandes y legibles */
@@ -275,8 +343,14 @@ select:focus {
 
 .admin-card:hover {
     transform: none;
-    border-color: var(--border);
+    border-color: #cbd5e1;
     box-shadow: none;
+}
+
+.admin-card.oculto-ronda {
+    opacity: 0.55;
+    background: #f8fafc;
+    border-style: dashed;
 }
 
 /* Tablas de Resultados */
@@ -287,17 +361,17 @@ select:focus {
 }
 
 .results-table th {
-    background: #f8fafc;
+    background: #eff6ff;
     padding: 14px;
-    border-bottom: 2px solid var(--border);
+    border-bottom: 2px solid #bfdbfe;
     text-align: left;
-    color: #475569;
+    color: #1e3a8a;
     font-size: 1.1rem;
 }
 
 .results-table td {
     padding: 14px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #e2e8f0;
     text-align: left;
     font-size: 1.1rem;
 }
@@ -345,9 +419,17 @@ select:focus {
         font-size: 1.45rem;
     }
 
+    .round-banner-title {
+        font-size: 1.35rem;
+    }
+
     .group-title {
         font-size: 1.15rem;
         padding: 10px 12px;
+    }
+
+    .pdf-buttons-grid {
+        grid-template-columns: 1fr;
     }
 
     /* En celular: 2 tarjetas por fila para ver todos los candidatos rápido */
