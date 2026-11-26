@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro para Carnets - Elección Junta Directiva 2027</title>
+    <title>Registro para Carnets - Jurado de Escrutinio Final 2027</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -12,13 +12,6 @@
             --emerald-light: #059669;
             --emerald-soft: #d1fae5;
             --emerald-bg: #f0fdf4;
-            --blue-dark: #1e3a8a;
-            --blue-main: #1d4ed8;
-            --amber-dark: #78350f;
-            --amber-main: #b45309;
-            --amber-light: #d97706;
-            --amber-soft: #fef3c7;
-            --amber-bg: #fffbeb;
         }
 
         * {
@@ -217,7 +210,7 @@
         .btn-del { background: #dc2626; color: white; }
 
         /* =========================================================
-           PLANTILLA DE CARNETS 1/4 DE HOJA (ESPACIO OPTIMIZADO Y LETRA GRANDE)
+           PLANTILLA DE CARNETS 1/4 DE HOJA (SIEMPRE VERDE)
            ========================================================= */
         .preview-title {
             font-size: 1.15rem;
@@ -309,7 +302,6 @@
             display: inline-block;
         }
 
-        /* Círculo amplio y letra grande para aprovechar todo el centro */
         .name-circle {
             width: 222px;
             height: 222px;
@@ -338,13 +330,13 @@
             background: var(--emerald-dark);
             color: white;
             font-weight: 900;
-            font-size: 1.18rem;
+            font-size: 1.12rem;
             padding: 10px 12px;
             border-radius: 25px;
             margin: 0 12px;
             text-align: center;
             letter-spacing: 0.3px;
-            line-height: 1.12;
+            line-height: 1.15;
             text-transform: uppercase;
         }
 
@@ -356,55 +348,8 @@
             padding: 10px 8px;
             text-align: center;
             border-top: 3px solid var(--emerald-light);
-            letter-spacing: 0.3px;
-        }
-
-        /* Variante 2: Jurado Encargado de Escrutinio Final (Azul) */
-        .gafete-escrutinio {
-            border-color: var(--blue-dark);
-        }
-        .gafete-escrutinio .top-band {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 65%, #3b82f6 100%);
-        }
-        .gafete-escrutinio .name-circle {
-            border-color: var(--blue-main);
-            background: #eff6ff;
-        }
-        .gafete-escrutinio .person-name {
-            color: var(--blue-dark);
-        }
-        .gafete-escrutinio .role-pill {
-            background: var(--blue-dark);
-            font-size: 1.05rem;
-        }
-        .gafete-escrutinio .footer-bar {
-            background: #dbeafe;
-            color: var(--blue-dark);
-            border-top-color: var(--blue-main);
-        }
-
-        /* Variante 3: Observadores (Dorado / Ámbar) */
-        .gafete-observador {
-            border-color: var(--amber-main);
-        }
-        .gafete-observador .top-band {
-            background: linear-gradient(135deg, #78350f 0%, #b45309 65%, #d97706 100%);
-        }
-        .gafete-observador .name-circle {
-            border-color: var(--amber-light);
-            background: var(--amber-bg);
-        }
-        .gafete-observador .person-name {
-            color: var(--amber-dark);
-        }
-        .gafete-observador .role-pill {
-            background: var(--amber-dark);
-            font-size: 1.25rem;
-        }
-        .gafete-observador .footer-bar {
-            background: var(--amber-soft);
-            color: var(--amber-dark);
-            border-top-color: var(--amber-light);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -437,9 +382,7 @@
             <div class="form-group">
                 <label for="reg-rol">Función asignada:</label>
                 <select id="reg-rol">
-                    <option value="computadora">Encargado de Computadora</option>
-                    <option value="escrutinio">Jurado Encargado de Escrutinio Final</option>
-                    <option value="observador">Observador</option>
+                    <option value="escrutinio" selected>Jurado de Escrutinio Final</option>
                 </select>
             </div>
 
@@ -519,7 +462,6 @@
     let listaOperadores = [];
     let logoDataURL = "";
 
-    // Convierte automáticamente img/logo.png (2).jpg a DataURL al abrir la página en Netlify
     function precargarLogoLocal() {
         const img = new Image();
         img.crossOrigin = "Anonymous";
@@ -549,7 +491,6 @@
         const btn = document.getElementById('btn-enviar');
         const nombre = document.getElementById('reg-nombre').value.trim();
         const apellido = document.getElementById('reg-apellido').value.trim();
-        const rol = document.getElementById('reg-rol').value;
 
         if (!nombre || !apellido) {
             alert("Por favor escribe tu nombre y apellido.");
@@ -563,7 +504,7 @@
             await db.collection("operadores_carnet").add({
                 nombre,
                 apellido,
-                rol,
+                rol: "escrutinio",
                 creado: firebase.firestore.FieldValue.serverTimestamp()
             });
 
@@ -607,30 +548,18 @@
             return;
         }
 
-        let mesaCounter = 1;
-        tbody.innerHTML = listaOperadores.map((op, index) => {
-            let etiquetaRol = "";
-            if (op.rol === 'escrutinio') {
-                etiquetaRol = `<span style="color: #1e3a8a; font-weight: 700;">Jurado Encargado de Escrutinio Final</span>`;
-            } else if (op.rol === 'observador') {
-                etiquetaRol = `<span style="color: #b45309; font-weight: 700;">Observador</span>`;
-            } else {
-                etiquetaRol = `<span style="color: #065f46; font-weight: 700;">Encargado de Computadora (Mesa ${mesaCounter++})</span>`;
-            }
-
-            return `
-                <tr>
-                    <td><strong>${index + 1}</strong></td>
-                    <td>${op.nombre}</td>
-                    <td>${op.apellido}</td>
-                    <td>${etiquetaRol}</td>
-                    <td>
-                        <button class="btn-sm btn-edit" onclick="editarOperador('${op.id}')">Editar</button>
-                        <button class="btn-sm btn-del" onclick="eliminarOperador('${op.id}')">Borrar</button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        tbody.innerHTML = listaOperadores.map((op, index) => `
+            <tr>
+                <td><strong>${index + 1}</strong></td>
+                <td>${op.nombre}</td>
+                <td>${op.apellido}</td>
+                <td><span style="color: #065f46; font-weight: 700;">Jurado de Escrutinio Final</span></td>
+                <td>
+                    <button class="btn-sm btn-edit" onclick="editarOperador('${op.id}')">Editar</button>
+                    <button class="btn-sm btn-del" onclick="eliminarOperador('${op.id}')">Borrar</button>
+                </td>
+            </tr>
+        `).join('');
 
         renderizarHojasCarnets();
     }
@@ -657,43 +586,9 @@
         }
     }
 
-    function crearGafeteHTML(op, numeroMesa) {
+    function crearGafeteHTML(op) {
         const logoSrc = logoDataURL || "img/logo.png (2).jpg";
         const logoTag = `<img src="${logoSrc}" class="logo-badge" alt="Logo" onerror="this.style.visibility='hidden'">`;
-
-        if (op.rol === 'escrutinio') {
-            return `
-                <div class="gafete gafete-escrutinio">
-                    <div class="top-band">
-                        <div class="lanyard-slot"></div>
-                        <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
-                    </div>
-                    <div class="logo-holder">${logoTag}</div>
-                    <div class="name-circle">
-                        <div class="person-name">${op.nombre}<br>${op.apellido}</div>
-                    </div>
-                    <div class="role-pill">JURADO ENCARGADO DE<br>ESCRUTINIO FINAL</div>
-                    <div class="footer-bar">COMISIÓN DE CONTEO Y ACTAS</div>
-                </div>
-            `;
-        }
-
-        if (op.rol === 'observador') {
-            return `
-                <div class="gafete gafete-observador">
-                    <div class="top-band">
-                        <div class="lanyard-slot"></div>
-                        <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
-                    </div>
-                    <div class="logo-holder">${logoTag}</div>
-                    <div class="name-circle">
-                        <div class="person-name">${op.nombre}<br>${op.apellido}</div>
-                    </div>
-                    <div class="role-pill">OBSERVADOR</div>
-                    <div class="footer-bar">OBSERVADOR DEL PROCESO ELECTORAL</div>
-                </div>
-            `;
-        }
 
         return `
             <div class="gafete">
@@ -705,8 +600,8 @@
                 <div class="name-circle">
                     <div class="person-name">${op.nombre}<br>${op.apellido}</div>
                 </div>
-                <div class="role-pill">ENCARGADO DE<br>COMPUTADORA</div>
-                <div class="footer-bar">MESA DE VOTACIÓN N.º ${numeroMesa}</div>
+                <div class="role-pill">JURADO DE<br>ESCRUTINIO FINAL</div>
+                <div class="footer-bar">CONTEO DE ACTAS</div>
             </div>
         `;
     }
@@ -715,14 +610,7 @@
         const sheetsContainer = document.getElementById('sheets-container');
         sheetsContainer.innerHTML = "";
 
-        let mesaNumero = 1;
-        const tarjetasHTML = listaOperadores.map(op => {
-            if (op.rol === 'computadora') {
-                return crearGafeteHTML(op, mesaNumero++);
-            } else {
-                return crearGafeteHTML(op, null);
-            }
-        });
+        const tarjetasHTML = listaOperadores.map(op => crearGafeteHTML(op));
 
         for (let i = 0; i < tarjetasHTML.length; i += 4) {
             const grupo = tarjetasHTML.slice(i, i + 4).join('');
@@ -761,7 +649,7 @@
 
         const opciones = {
             margin: 0,
-            filename: 'Carnets_Con_Nombres_Junta_2027.pdf',
+            filename: 'Carnets_Jurado_Escrutinio_Final_2027.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, scrollY: 0 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
@@ -780,4 +668,4 @@
 </script>
 
 </body>
-</html> 
+</html>
