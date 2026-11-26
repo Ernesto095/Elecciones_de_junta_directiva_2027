@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Hablador Triangular de Mesa - Escrutinio Final</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #e2e8f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Panel de control (no sale al imprimir) */
+        .controles {
+            background: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-end;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .campo label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #064e3b;
+        }
+
+        .campo input, .campo select {
+            padding: 9px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .btn-imprimir {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-imprimir:hover {
+            background: #047857;
+        }
+
+        /* Hoja tamaño Carta Horizontal */
+        .hoja-carta {
+            width: 27.94cm;
+            height: 21.59cm;
+            background: white;
+            padding: 0.3cm 1.4cm;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Plantilla del Triángulo (3 caras de 6.8 cm) */
+        .plantilla-triangulo {
+            width: 25cm;
+            border: 1.5px dashed #94a3b8;
+        }
+
+        .cara {
+            width: 100%;
+            height: 6.7cm;
+            border-bottom: 1.5px dashed #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Cara trasera invertida para lectura doble cara */
+        .cara-invertida {
+            transform: rotate(180deg);
+        }
+
+        /* Franja lateral decorativa estilo institucional */
+        .cara::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 14px;
+            background: var(--color-tema, #064e3b);
+        }
+
+        .cara::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 14px;
+            background: var(--color-tema, #064e3b);
+        }
+
+        .logo-box {
+            width: 115px;
+            height: 115px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .texto-central {
+            text-align: center;
+            flex: 1;
+            padding: 0 18px;
+        }
+
+        .subtitulo-top {
+            font-size: 13pt;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-acento, #059669);
+            margin-bottom: 4px;
+        }
+
+        .titulo-principal {
+            font-size: 34pt;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-tema, #064e3b);
+            line-height: 1.05;
+        }
+
+        .subtitulo-bottom {
+            font-size: 11pt;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        .marca-doblez {
+            position: absolute;
+            right: 22px;
+            bottom: 3px;
+            font-size: 7.5pt;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        /* Base inferior + Pestaña de pegado */
+        .cara-base {
+            width: 100%;
+            height: 6.2cm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 9pt;
+            text-align: center;
+            border-bottom: 1.5px dashed #94a3b8;
+        }
+
+        .pestana-pegar {
+            width: 100%;
+            height: 1cm;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        @media print {
+            @page {
+                size: letter landscape;
+                margin: 0;
+            }
+            body {
+                background: white;
+                padding: 0;
+            }
+            .controles {
+                display: none !important;
+            }
+            .hoja-carta {
+                box-shadow: none;
+                width: 100%;
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controles">
+        <div class="campo">
+            <label>Texto Principal del Triángulo:</label>
+            <input type="text" id="input-titulo" value="ESCRUTINIO FINAL" oninput="actualizarTexto()">
+        </div>
+        <div class="campo">
+            <label>Encabezado Superior:</label>
+            <input type="text" id="input-sub-top" value="ELECCIÓN JUNTA DIRECTIVA 2027" oninput="actualizarTexto()">
+        </div>
+        <div class="campo">
+            <label>Detalle Inferior (Opcional):</label>
+            <input type="text" id="input-sub-bot" value="COMISIÓN DE CONTEO Y ACTAS" oninput="actualizarTexto()">
+        </div>
+        <div class="campo" style="max-width: 180px;">
+            <label>Color Institucional:</label>
+            <select id="select-color" onchange="cambiarColor()">
+                <option value="verde">Verde (Oficial)</option>
+                <option value="azul">Azul Marino</option>
+                <option value="dorado">Negro / Dorado</option>
+            </select>
+        </div>
+        <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / PDF</button>
+    </div>
+
+    <div class="hoja-carta">
+        <div class="plantilla-triangulo" id="plantilla">
+            
+            <!-- CARA TRASERA (INVERTIDA PARA QUE SE LEA DESDE ATRÁS DE LA MESA) -->
+            <div class="cara cara-invertida">
+                <div class="logo-box">
+                    <img src="img/logo.png (2).jpg" alt="Logo" onerror="this.style.display='none'">
+                </div>
+                <div class="texto-central">
+                    <div class="subtitulo-top lbl-top">ELECCIÓN JUNTA DIRECTIVA 2027</div>
+                    <div class="titulo-principal lbl-main">ESCRUTINIO FINAL</div>
+                    <div class="subtitulo-bottom lbl-bot">COMISIÓN DE CONTEO Y ACTAS</div>
+                </div>
+                <div class="logo-box">
+                    <img src="img/logo.png (2).jpg" alt="Logo" onerror="this.style.display='none'">
+                </div>
+            </div>
+
+            <!-- CARA FRONTAL -->
+            <div class="cara">
+                <div class="logo-box">
+                    <img src="img/logo.png (2).jpg" alt="Logo" onerror="this.style.display='none'">
+                </div>
+                <div class="texto-central">
+                    <div class="subtitulo-top lbl-top">ELECCIÓN JUNTA DIRECTIVA 2027</div>
+                    <div class="titulo-principal lbl-main">ESCRUTINIO FINAL</div>
+                    <div class="subtitulo-bottom lbl-bot">COMISIÓN DE CONTEO Y ACTAS</div>
+                </div>
+                <div class="logo-box">
+                    <img src="img/logo.png (2).jpg" alt="Logo" onerror="this.style.display='none'">
+                </div>
+                <span class="marca-doblez">✂ Doblar por la línea punteada</span>
+            </div>
+
+            <!-- BASE QUE APOYA EN LA MESA -->
+            <div class="cara-base">
+                <strong>BASE DE APOYO SOBRE LA MESA</strong>
+                <span>(Esta cara queda oculta tocando la mesa al armar el triángulo)</span>
+            </div>
+
+            <!-- PESTAÑA PARA PEGAR O ENGRAPAR -->
+            <div class="pestana-pegar">
+                ▲ Aplicar pegamento o engrapar aquí por dentro con el borde superior ▲
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function actualizarTexto() {
+            const titulo = document.getElementById('input-titulo').value || ' ';
+            const top = document.getElementById('input-sub-top').value || ' ';
+            const bot = document.getElementById('input-sub-bot').value || ' ';
+
+            document.querySelectorAll('.lbl-main').forEach(el => el.innerText = titulo);
+            document.querySelectorAll('.lbl-top').forEach(el => el.innerText = top);
+            document.querySelectorAll('.lbl-bot').forEach(el => el.innerText = bot);
+        }
+
+        function cambiarColor() {
+            const tema = document.getElementById('select-color').value;
+            const root = document.documentElement;
+            if (tema === 'verde') {
+                root.style.setProperty('--color-tema', '#064e3b');
+                root.style.setProperty('--color-acento', '#059669');
+            } else if (tema === 'azul') {
+                root.style.setProperty('--color-tema', '#1e3a8a');
+                root.style.setProperty('--color-acento', '#1d4ed8');
+            } else {
+                root.style.setProperty('--color-tema', '#1e293b');
+                root.style.setProperty('--color-acento', '#b45309');
+            }
+        }
+    </script>
+
+</body>
+</html>
