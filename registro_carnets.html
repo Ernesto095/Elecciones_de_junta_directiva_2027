@@ -14,6 +14,11 @@
             --emerald-bg: #f0fdf4;
             --blue-dark: #1e3a8a;
             --blue-main: #1d4ed8;
+            --amber-dark: #78350f;
+            --amber-main: #b45309;
+            --amber-light: #d97706;
+            --amber-soft: #fef3c7;
+            --amber-bg: #fffbeb;
         }
 
         * {
@@ -212,7 +217,7 @@
         .btn-del { background: #dc2626; color: white; }
 
         /* =========================================================
-           PLANTILLA OCULTA / VISTA PREVIA DE CARNETS 1/4 DE HOJA
+           PLANTILLA DE CARNETS 1/4 DE HOJA (ESPACIO OPTIMIZADO Y LETRA GRANDE)
            ========================================================= */
         .preview-title {
             font-size: 1.15rem;
@@ -235,11 +240,11 @@
             height: 10.95in;
             margin: 0 auto 20px auto;
             background: white;
-            padding: 0.28in;
+            padding: 0.22in;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 0.24in;
+            gap: 0.2in;
             border: 1px solid #cbd5e1;
             page-break-after: always;
             break-after: page;
@@ -256,7 +261,7 @@
             background: white;
             border-radius: 18px;
             overflow: hidden;
-            border: 3px solid var(--emerald-light);
+            border: 3.5px solid var(--emerald-light);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -266,35 +271,36 @@
         .top-band {
             background: linear-gradient(135deg, #064e3b 0%, #059669 65%, #10b981 100%);
             color: white;
-            padding: 10px 14px 36px 14px;
+            padding: 8px 12px 42px 12px;
             text-align: center;
         }
 
         .lanyard-slot {
             width: 58px;
-            height: 10px;
+            height: 9px;
             background: rgba(255, 255, 255, 0.35);
             border: 1.5px solid rgba(255, 255, 255, 0.8);
             border-radius: 6px;
-            margin: 0 auto 8px auto;
+            margin: 0 auto 6px auto;
         }
 
         .title {
-            font-size: 1.28rem;
+            font-size: 1.38rem;
             font-weight: 900;
-            line-height: 1.18;
+            line-height: 1.15;
             letter-spacing: 0.4px;
         }
 
         .logo-holder {
-            margin-top: -34px;
+            margin-top: -38px;
             text-align: center;
             z-index: 2;
+            height: 76px;
         }
 
         .logo-badge {
-            width: 74px;
-            height: 74px;
+            width: 76px;
+            height: 76px;
             object-fit: cover;
             border-radius: 50%;
             border: 3.5px solid white;
@@ -303,28 +309,28 @@
             display: inline-block;
         }
 
-        /* Círculo con el nombre y apellido centrado */
+        /* Círculo amplio y letra grande para aprovechar todo el centro */
         .name-circle {
-            width: 192px;
-            height: 192px;
+            width: 222px;
+            height: 222px;
             border-radius: 50%;
-            border: 3.5px dashed var(--emerald-light);
+            border: 4px dashed var(--emerald-light);
             background: var(--emerald-bg);
-            margin: 2px auto;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 14px;
             text-align: center;
         }
 
         .person-name {
-            font-size: 1.48rem;
+            font-size: 1.85rem;
             font-weight: 900;
             color: var(--emerald-dark);
             text-transform: uppercase;
-            line-height: 1.15;
+            line-height: 1.12;
             word-break: break-word;
         }
 
@@ -332,13 +338,13 @@
             background: var(--emerald-dark);
             color: white;
             font-weight: 900;
-            font-size: 1.12rem;
-            padding: 9px 14px;
+            font-size: 1.18rem;
+            padding: 10px 12px;
             border-radius: 25px;
-            margin: 0 14px;
+            margin: 0 12px;
             text-align: center;
-            letter-spacing: 0.4px;
-            line-height: 1.15;
+            letter-spacing: 0.3px;
+            line-height: 1.12;
             text-transform: uppercase;
         }
 
@@ -346,14 +352,14 @@
             background: var(--emerald-soft);
             color: var(--emerald-dark);
             font-weight: 900;
-            font-size: 0.96rem;
-            padding: 9px 8px;
+            font-size: 1.05rem;
+            padding: 10px 8px;
             text-align: center;
-            border-top: 2.5px solid var(--emerald-light);
+            border-top: 3px solid var(--emerald-light);
             letter-spacing: 0.3px;
         }
 
-        /* Variante Escrutinio Final */
+        /* Variante 2: Jurado Encargado de Escrutinio Final (Azul) */
         .gafete-escrutinio {
             border-color: var(--blue-dark);
         }
@@ -369,11 +375,36 @@
         }
         .gafete-escrutinio .role-pill {
             background: var(--blue-dark);
+            font-size: 1.05rem;
         }
         .gafete-escrutinio .footer-bar {
             background: #dbeafe;
             color: var(--blue-dark);
             border-top-color: var(--blue-main);
+        }
+
+        /* Variante 3: Observadores (Dorado / Ámbar) */
+        .gafete-observador {
+            border-color: var(--amber-main);
+        }
+        .gafete-observador .top-band {
+            background: linear-gradient(135deg, #78350f 0%, #b45309 65%, #d97706 100%);
+        }
+        .gafete-observador .name-circle {
+            border-color: var(--amber-light);
+            background: var(--amber-bg);
+        }
+        .gafete-observador .person-name {
+            color: var(--amber-dark);
+        }
+        .gafete-observador .role-pill {
+            background: var(--amber-dark);
+            font-size: 1.25rem;
+        }
+        .gafete-observador .footer-bar {
+            background: var(--amber-soft);
+            color: var(--amber-dark);
+            border-top-color: var(--amber-light);
         }
     </style>
 </head>
@@ -386,7 +417,7 @@
         <p id="header-subtitle">Registro de Datos para Carnet Oficial</p>
     </header>
 
-    <!-- VISTA 1: FORMULARIO PARA QUE EL ENCARGADO ENVÍE SU NOMBRE Y APELLIDO -->
+    <!-- VISTA 1: FORMULARIO PARA QUE EL PARTICIPANTE ENVÍE SU NOMBRE Y APELLIDO -->
     <div class="content" id="view-form">
         <form id="form-registro" onsubmit="enviarDatosCarnet(event)">
             <p style="color: #475569; margin-bottom: 20px; font-size: 1rem;">
@@ -407,7 +438,8 @@
                 <label for="reg-rol">Función asignada:</label>
                 <select id="reg-rol">
                     <option value="computadora">Encargado de Computadora</option>
-                    <option value="escrutinio">Encargado de Escrutinio Final</option>
+                    <option value="escrutinio">Jurado Encargado de Escrutinio Final</option>
+                    <option value="observador">Observador</option>
                 </select>
             </div>
 
@@ -435,7 +467,7 @@
             </div>
 
             <div class="admin-row" style="background: white; padding: 10px 14px; border-radius: 8px; border: 1px dashed #059669;">
-                <span style="font-size: 0.9rem; color: #064e3b;"><strong>Logo para el PDF</strong> (<code>img/logo.png (2).jpg</code>):</span>
+                <span style="font-size: 0.9rem; color: #064e3b;"><strong>Logo opcional</strong> (si deseas cambiar el predeterminado <code>img/logo.png (2).jpg</code>):</span>
                 <input type="file" accept="image/*" onchange="cargarLogoBase64(this)">
             </div>
 
@@ -469,7 +501,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
-    // Conectado al proyecto de pruebas (eleccion-junta-pastoral-2027)
     const firebaseConfig = {
         apiKey: "AIzaSyCVlxVjMyxXt204UP4FLxz_dEhkAUqYuQ",
         authDomain: "eleccion-junta-pastoral-2027.firebaseapp.com",
@@ -488,11 +519,31 @@
     let listaOperadores = [];
     let logoDataURL = "";
 
+    // Convierte automáticamente img/logo.png (2).jpg a DataURL al abrir la página en Netlify
+    function precargarLogoLocal() {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = function() {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                logoDataURL = canvas.toDataURL('image/png');
+                if (esAdmin && listaOperadores.length > 0) renderizarHojasCarnets();
+            } catch (e) {
+                console.warn("Logo local cargado sin canvas base64:", e);
+            }
+        };
+        img.src = "img/logo.png (2).jpg";
+    }
+    precargarLogoLocal();
+
     function soloLetras(input) {
         input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
     }
 
-    // --- ENVÍO DEL FORMULARIO POR PARTE DEL ENCARGADO ---
+    // --- ENVÍO DEL FORMULARIO ---
     async function enviarDatosCarnet(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-enviar');
@@ -551,17 +602,21 @@
         contador.innerText = `${listaOperadores.length} registrado(s)`;
 
         if (listaOperadores.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Aún no se ha registrado ningún encargado.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Aún no se ha registrado ningún hermano.</td></tr>`;
             document.getElementById('sheets-container').innerHTML = "";
             return;
         }
 
         let mesaCounter = 1;
         tbody.innerHTML = listaOperadores.map((op, index) => {
-            const esEscrutinio = op.rol === 'escrutinio';
-            const etiquetaRol = esEscrutinio
-                ? `<span style="color: #1e3a8a; font-weight: 700;">Escrutinio Final</span>`
-                : `<span style="color: #065f46; font-weight: 700;">Computadora (Mesa ${mesaCounter++})</span>`;
+            let etiquetaRol = "";
+            if (op.rol === 'escrutinio') {
+                etiquetaRol = `<span style="color: #1e3a8a; font-weight: 700;">Jurado Encargado de Escrutinio Final</span>`;
+            } else if (op.rol === 'observador') {
+                etiquetaRol = `<span style="color: #b45309; font-weight: 700;">Observador</span>`;
+            } else {
+                etiquetaRol = `<span style="color: #065f46; font-weight: 700;">Encargado de Computadora (Mesa ${mesaCounter++})</span>`;
+            }
 
             return `
                 <tr>
@@ -603,7 +658,8 @@
     }
 
     function crearGafeteHTML(op, numeroMesa) {
-        const logoStyle = logoDataURL ? `src="${logoDataURL}" style="visibility: visible;"` : `style="visibility: hidden;"`;
+        const logoSrc = logoDataURL || "img/logo.png (2).jpg";
+        const logoTag = `<img src="${logoSrc}" class="logo-badge" alt="Logo" onerror="this.style.visibility='hidden'">`;
 
         if (op.rol === 'escrutinio') {
             return `
@@ -612,14 +668,29 @@
                         <div class="lanyard-slot"></div>
                         <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
                     </div>
-                    <div class="logo-holder">
-                        <img class="logo-badge" alt="Logo" ${logoStyle}>
-                    </div>
+                    <div class="logo-holder">${logoTag}</div>
                     <div class="name-circle">
                         <div class="person-name">${op.nombre}<br>${op.apellido}</div>
                     </div>
-                    <div class="role-pill">ENCARGADO DE<br>ESCRUTINIO FINAL</div>
+                    <div class="role-pill">JURADO ENCARGADO DE<br>ESCRUTINIO FINAL</div>
                     <div class="footer-bar">COMISIÓN DE CONTEO Y ACTAS</div>
+                </div>
+            `;
+        }
+
+        if (op.rol === 'observador') {
+            return `
+                <div class="gafete gafete-observador">
+                    <div class="top-band">
+                        <div class="lanyard-slot"></div>
+                        <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
+                    </div>
+                    <div class="logo-holder">${logoTag}</div>
+                    <div class="name-circle">
+                        <div class="person-name">${op.nombre}<br>${op.apellido}</div>
+                    </div>
+                    <div class="role-pill">OBSERVADOR</div>
+                    <div class="footer-bar">VEEDURÍA DEL PROCESO ELECTORAL</div>
                 </div>
             `;
         }
@@ -630,9 +701,7 @@
                     <div class="lanyard-slot"></div>
                     <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
                 </div>
-                <div class="logo-holder">
-                    <img class="logo-badge" alt="Logo" ${logoStyle}>
-                </div>
+                <div class="logo-holder">${logoTag}</div>
                 <div class="name-circle">
                     <div class="person-name">${op.nombre}<br>${op.apellido}</div>
                 </div>
@@ -648,14 +717,13 @@
 
         let mesaNumero = 1;
         const tarjetasHTML = listaOperadores.map(op => {
-            if (op.rol === 'escrutinio') {
-                return crearGafeteHTML(op, null);
-            } else {
+            if (op.rol === 'computadora') {
                 return crearGafeteHTML(op, mesaNumero++);
+            } else {
+                return crearGafeteHTML(op, null);
             }
         });
 
-        // Agrupar de 4 en 4 por cada página tamaño Carta
         for (let i = 0; i < tarjetasHTML.length; i += 4) {
             const grupo = tarjetasHTML.slice(i, i + 4).join('');
             sheetsContainer.innerHTML += `<div class="print-sheet">${grupo}</div>`;
@@ -675,7 +743,7 @@
 
     async function descargarPDFCarnets() {
         if (listaOperadores.length === 0) {
-            alert("Aún no hay ningún encargado registrado para generar carnets.");
+            alert("Aún no hay ningún hermano registrado para generar carnets.");
             return;
         }
 
@@ -712,4 +780,4 @@
 </script>
 
 </body>
-</html>
+</html> 
