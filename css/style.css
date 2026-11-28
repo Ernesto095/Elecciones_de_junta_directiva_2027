@@ -460,3 +460,35 @@ select:focus {
         font-size: 18px;
     }
 }
+
+/* 2. Encabezado bajado bastante más arriba */
+        .top-band {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 65%, #10b981 100%);
+            color: white;
+            padding: 36px 10px 36px 10px;
+            text-align: center;
+        }
+
+        .lanyard-slot {
+            width: 50px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.35);
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            border-radius: 6px;
+            margin: 0 auto 18px auto;
+        }
+
+        .name-circle {
+            width: 162px;
+            height: 162px;
+            border-radius: 50%;
+            border: 3.5px dashed var(--emerald-light);
+            background: var(--emerald-bg);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            text-align: center;
+        }
