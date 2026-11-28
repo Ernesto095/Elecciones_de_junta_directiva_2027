@@ -462,7 +462,7 @@ select:focus {
 }
 
 /* =========================================
-   ESTILOS DE CARNETS (ACTUALIZADOS Y LIMPIOS)
+   ESTILOS DE CARNETS (VERDE LIMÓN ENCENDIDO)
    ========================================= */
 .gafete {
     width: 2.85in;
@@ -470,7 +470,7 @@ select:focus {
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    border: 3px solid #064e3b;
+    border: 3px solid #65a30d;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -478,17 +478,18 @@ select:focus {
 }
 
 .top-band {
-    background: linear-gradient(135deg, #022c22 0%, #064e3b 60%, #065f46 100%);
-    color: white;
+    background: linear-gradient(135deg, #4d7c0f 0%, #65a30d 50%, #84cc16 100%);
+    color: #ffffff;
     padding: 36px 10px 36px 10px;
     text-align: center;
+    text-shadow: 0 1px 3px rgba(26, 46, 5, 0.45);
 }
 
 .lanyard-slot {
     width: 50px;
     height: 8px;
-    background: rgba(255, 255, 255, 0.35);
-    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.4);
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
     border-radius: 6px;
     margin: 0 auto 18px auto;
 }
@@ -497,8 +498,8 @@ select:focus {
     width: 162px;
     height: 162px;
     border-radius: 50%;
-    border: 3.5px dashed #064e3b;
-    background: #f0fdf4;
+    border: 3.5px dashed #84cc16;
+    background: #f7fee7;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -508,14 +509,39 @@ select:focus {
     text-align: center;
 }
 
+.person-name {
+    font-size: 1.42rem;
+    font-weight: 900;
+    color: #1a2e05;
+    text-transform: uppercase;
+    line-height: 1.12;
+    word-break: break-word;
+}
+
+.role-pill {
+    background: #84cc16;
+    color: #1a2e05;
+    font-weight: 900;
+    font-size: 0.88rem;
+    padding: 8px 10px;
+    border-radius: 22px;
+    margin: 0 28px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    line-height: 1.15;
+    text-transform: uppercase;
+    border: 2px solid #4d7c0f;
+}
+
 .footer-bar {
-    background: #064e3b;
+    background: #65a30d;
     color: #ffffff;
     font-weight: 900;
     font-size: 0.88rem;
     padding: 9px 6px;
     text-align: center;
-    border-top: 2.5px solid #022c22;
+    border-top: 2.5px solid #4d7c0f;
     letter-spacing: 0.3px;
     text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(26, 46, 5, 0.4);
 }

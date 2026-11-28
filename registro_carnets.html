@@ -1,547 +1,770 @@
-/* Variables de color y diseño (Tema Azul para Plan A) */
-:root {
-    --primary: #1e40af;
-    --primary-light: #3b82f6;
-    --bg: #f1f5f9;
-    --card-bg: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --border: #bfdbfe;
-    --success: #10b981;
-    --danger: #dc2626;
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro para Carnets - Elección Junta Directiva 2027</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --lime-deep: #1a2e05;
+            --lime-dark: #4d7c0f;
+            --lime-main: #65a30d;
+            --lime-bright: #84cc16;
+            --lime-soft: #ecfccb;
+            --lime-bg: #f7fee7;
+            --amber-dark: #78350f;
+            --amber-main: #b45309;
+            --amber-light: #d97706;
+            --amber-soft: #fef3c7;
+            --amber-bg: #fffbeb;
+        }
 
-/* Reset y Base */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
 
-body {
-    background-color: var(--bg);
-    color: var(--text-main);
-    padding: 15px 20px;
-    display: flex;
-    justify-content: center;
-}
+        body {
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 20px;
+        }
 
-/* Contenedor ampliado para aprovechar casi todo el ancho de la pantalla */
-.container {
-    width: 97%;
-    max-width: 1600px; 
-    background: var(--card-bg);
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(30, 64, 175, 0.12);
-    overflow: hidden;
-    border: 1px solid #dbeafe;
-}
+        .container {
+            max-width: 620px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 28px rgba(77, 124, 15, 0.14);
+            overflow: hidden;
+            border: 1px solid #d9f99d;
+        }
 
-/* Encabezado en degradado Azul */
-header {
-    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 55%, #60a5fa 100%);
-    color: white;
-    padding: 30px 20px;
-    text-align: center;
-}
+        .container.admin-wide {
+            max-width: 980px;
+        }
 
-.header-logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 12px;
-}
+        header {
+            background: linear-gradient(135deg, #4d7c0f 0%, #65a30d 55%, #84cc16 100%);
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+            text-shadow: 0 1px 3px rgba(26, 46, 5, 0.4);
+        }
 
-.header-logo-img {
-    max-width: 115px;
-    width: auto;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    border-radius: 10px;
-}
+        .header-logo {
+            width: 85px;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 3px solid white;
+            background: white;
+            margin: 0 auto 12px auto;
+            display: block;
+        }
 
-#main-title {
-    font-size: 1.9rem;
-    font-weight: 800;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-}
+        header h1 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
 
-#main-subtitle {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.22);
-    padding: 6px 20px;
-    border-radius: 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    backdrop-filter: blur(4px);
-}
+        header p {
+            font-size: 0.98rem;
+            opacity: 0.95;
+        }
 
-/* Navegación */
-nav {
-    display: flex;
-    gap: 10px;
-    padding: 15px 25px;
-    background: #eff6ff;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-}
+        .content {
+            padding: 26px 24px;
+        }
 
-.nav-btn {
-    flex: 1;
-    min-width: 150px;
-    padding: 14px;
-    border: 1px solid #cbd5e1;
-    background: white;
-    color: var(--text-main);
-    font-weight: 700;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-}
+        .form-group {
+            margin-bottom: 18px;
+        }
 
-.nav-btn.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 7px;
+            color: #1e293b;
+            font-size: 1.05rem;
+        }
 
-/* Secciones y Formularios */
-.section {
-    display: none;
-    padding: 25px 30px;
-}
+        input[type="text"], select {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            outline: none;
+            background: white;
+        }
 
-.section.active {
-    display: block;
-}
+        input[type="text"]:focus, select:focus {
+            border-color: var(--lime-main);
+            box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.25);
+        }
 
-.form-group {
-    margin-bottom: 15px;
-}
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 700;
-    color: #1e293b;
-    font-size: 1.15rem;
-}
+        .btn-primary {
+            background: var(--lime-main);
+            color: white;
+            text-shadow: 0 1px 2px rgba(26, 46, 5, 0.35);
+        }
 
-input[type="text"], 
-select, 
-input[type="file"] {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 1.15rem;
-    outline: none;
-    background: white;
-}
+        .btn-primary:hover {
+            background: var(--lime-dark);
+        }
 
-input[type="text"]:focus, 
-select:focus {
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: wait;
+        }
 
-/* Botones */
-.btn {
-    padding: 15px 22px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 1.1rem;
-}
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 25px 15px;
+            background: var(--lime-bg);
+            border: 2px solid var(--lime-bright);
+            border-radius: 12px;
+        }
 
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: #1e3a8a; }
+        .success-box h2 {
+            color: var(--lime-dark);
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
 
-.btn-success { background: #10b981; color: white; width: 100%; margin-top: 25px; font-size: 1.25rem; padding: 20px; }
-.btn-success:hover { background: #059669; }
+        /* =========================================================
+           ESTILOS DEL PANEL DE ADMINISTRACIÓN
+           ========================================================= */
+        .admin-toolbar {
+            background: var(--lime-bg);
+            border: 1.5px solid #bef264;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
 
-.btn-danger { background: var(--danger); color: white; }
-.btn-edit { background: #d97706; color: white; }
-.cancel-btn { background: #64748b; color: white; display: none; margin-left: 10px; }
+        .admin-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
 
-/* Sección de los 6 Botones de PDF */
-.pdf-actions-wrapper {
-    margin-top: 35px;
-    padding-top: 25px;
-    border-top: 2px solid var(--border);
-}
+        .stats-pill {
+            background: var(--lime-dark);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
 
-.pdf-buttons-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 25px;
+        }
 
-.btn-pdf-cargo {
-    background: #1d4ed8;
-    color: white;
-    font-size: 0.98rem;
-    padding: 14px 16px;
-    text-align: left;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-.btn-pdf-cargo:hover {
-    background: #1e40af;
-}
+        th {
+            background: var(--lime-soft);
+            color: var(--lime-deep);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
 
-.btn-pdf-general {
-    background: #0284c7;
-    color: white;
-    font-size: 1rem;
-    padding: 15px 18px;
-}
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 1rem;
+        }
 
-.btn-pdf-general:hover {
-    background: #0369a1;
-}
+        .btn-sm {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-right: 4px;
+        }
 
-.btn-pdf-totales {
-    background: #1e3a8a;
-    color: white;
-    font-size: 1rem;
-    padding: 15px 18px;
-}
+        .btn-edit { background: #d97706; color: white; }
+        .btn-del { background: #dc2626; color: white; }
 
-.btn-pdf-totales:hover {
-    background: #172554;
-}
+        /* =========================================================
+           PLANTILLA DE CARNETS (VERDE LIMÓN ENCENDIDO)
+           ========================================================= */
+        .preview-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--lime-dark);
+            margin: 25px 0 12px 0;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
 
-/* Banner de Votación Activa */
-.round-banner {
-    background: #dbeafe;
-    border: 2px solid #1e40af;
-    border-radius: 12px;
-    padding: 18px 20px;
-    margin-bottom: 20px;
-    text-align: center;
-}
+        #sheets-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: auto;
+        }
 
-.round-banner-label {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #1e40af;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+        .print-sheet {
+            width: 8.5in;
+            height: 10.95in;
+            margin: 0 auto 20px auto;
+            background: white;
+            padding: 0.35in 0.45in;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 0.3in;
+            justify-items: center;
+            align-items: center;
+            border: 1px solid #cbd5e1;
+            page-break-after: always;
+            break-after: page;
+        }
 
-.round-banner-title {
-    font-size: 1.75rem;
-    font-weight: 900;
-    color: #1e3a8a;
-    margin-top: 4px;
-}
+        .print-sheet:last-child {
+            page-break-after: auto;
+            break-after: auto;
+        }
 
-/* Contenedores de Candidatos y Votación */
-.group-title {
-    background: #dbeafe;
-    color: #1e3a8a;
-    padding: 14px 18px;
-    font-size: 1.35rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-left: 7px solid #1e40af;
-    border-radius: 6px;
-    margin: 35px 0 18px 0;
-}
+        .gafete {
+            width: 2.85in;
+            height: 4.85in;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid #65a30d;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
 
-/* Cuadrícula de 5 columnas grandes en pantallas de computadora */
-.admin-grid,
-.candidates-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    background: #f8fafc;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #bfdbfe;
-}
+        .top-band {
+            background: linear-gradient(135deg, #4d7c0f 0%, #65a30d 50%, #84cc16 100%);
+            color: #ffffff;
+            padding: 36px 10px 36px 10px;
+            text-align: center;
+            text-shadow: 0 1px 3px rgba(26, 46, 5, 0.45);
+        }
 
-.candidate-card {
-    border: 2px solid #cbd5e1;
-    border-radius: 14px;
-    padding: 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    background: white;
-    position: relative;
-}
+        .lanyard-slot {
+            width: 50px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            margin: 0 auto 18px auto;
+        }
 
-.candidate-card:hover {
-    border-color: var(--primary-light);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(30, 64, 175, 0.12);
-}
+        .title {
+            font-size: 1.12rem;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: 0.3px;
+            color: #ffffff;
+        }
 
-/* Selección en Verde Esmeralda para resaltar claramente sobre el tema azul */
-.candidate-card.selected {
-    border-color: var(--success);
-    border-width: 5px;
-    background: #ecfdf5;
-    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.28);
-    transform: scale(1.02);
-}
+        .logo-holder {
+            margin-top: -33px;
+            text-align: center;
+            z-index: 2;
+            height: 66px;
+        }
 
-.candidate-card.selected::after {
-    content: '✔';
-    position: absolute;
-    top: -12px;
-    right: -12px;
-    background: var(--success);
-    color: white;
-    border-radius: 50%;
-    width: 46px; 
-    height: 46px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    border: 3px solid white;
-}
+        .logo-badge {
+            width: 66px;
+            height: 66px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid white;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+            display: inline-block;
+        }
 
-/* Imágenes más altas y grandes para los hermanos mayores */
-.candidate-img {
-    width: 100%;
-    height: 265px; 
-    object-fit: cover;
-    object-position: top center;
-    border-radius: 10px;
-    margin-bottom: 14px;
-    background-color: #f1f5f9;
-    border: 1px solid #cbd5e1;
-}
+        .name-circle {
+            width: 162px;
+            height: 162px;
+            border-radius: 50%;
+            border: 3.5px dashed #84cc16;
+            background: #f7fee7;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            text-align: center;
+        }
 
-/* Nombres más grandes y legibles */
-.candidate-name {
-    font-size: 1.35rem; 
-    font-weight: 800;
-    text-transform: uppercase;
-    color: var(--text-main);
-    line-height: 1.3;
-    margin-top: 4px;
-    word-wrap: break-word;
-}
+        .person-name {
+            font-size: 1.42rem;
+            font-weight: 900;
+            color: #1a2e05;
+            text-transform: uppercase;
+            line-height: 1.12;
+            word-break: break-word;
+        }
 
-.admin-card {
-    cursor: default;
-}
+        .role-pill {
+            background: #84cc16;
+            color: #1a2e05;
+            font-weight: 900;
+            font-size: 0.88rem;
+            padding: 8px 10px;
+            border-radius: 22px;
+            margin: 0 28px;
+            text-align: center;
+            letter-spacing: 0.2px;
+            line-height: 1.15;
+            text-transform: uppercase;
+            border: 2px solid #4d7c0f;
+        }
 
-.admin-card:hover {
-    transform: none;
-    border-color: #cbd5e1;
-    box-shadow: none;
-}
+        .footer-bar {
+            background: #65a30d;
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 0.88rem;
+            padding: 9px 6px;
+            text-align: center;
+            border-top: 2.5px solid #4d7c0f;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 2px rgba(26, 46, 5, 0.4);
+        }
 
-.admin-card.oculto-ronda {
-    opacity: 0.55;
-    background: #f8fafc;
-    border-style: dashed;
-}
+        /* Variante Observadores (Dorado / Ámbar) */
+        .gafete-observador {
+            border-color: var(--amber-dark);
+        }
+        .gafete-observador .top-band {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 60%, #92400e 100%);
+        }
+        .gafete-observador .name-circle {
+            border-color: var(--amber-dark);
+            background: var(--amber-bg);
+        }
+        .gafete-observador .person-name {
+            color: #451a03;
+        }
+        .gafete-observador .role-pill {
+            background: #451a03;
+            color: #ffffff;
+            border-color: #451a03;
+            font-size: 0.98rem;
+        }
+        .gafete-observador .footer-bar {
+            background: var(--amber-dark);
+            color: #ffffff;
+            border-top-color: #451a03;
+        }
+    </style>
+</head>
+<body>
 
-/* Tablas de Resultados */
-.results-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
+<div class="container" id="main-container">
+    <header>
+        <img src="img/logo.png (2).jpg" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+        <h1>Elección de Junta Directiva 2027</h1>
+        <p id="header-subtitle">Registro de Datos para Carnet Oficial</p>
+    </header>
 
-.results-table th {
-    background: #eff6ff;
-    padding: 14px;
-    border-bottom: 2px solid #bfdbfe;
-    text-align: left;
-    color: #1e3a8a;
-    font-size: 1.1rem;
-}
+    <!-- VISTA 1: FORMULARIO PARA QUE EL PARTICIPANTE ENVÍE SU NOMBRE Y APELLIDO -->
+    <div class="content" id="view-form">
+        <form id="form-registro" onsubmit="enviarDatosCarnet(event)">
+            <p style="color: #475569; margin-bottom: 20px; font-size: 1rem;">
+                Por favor escribe tu <strong>Nombre</strong> y <strong>Apellido</strong> tal como deseas que aparezca impreso en tu carnet.
+            </p>
 
-.results-table td {
-    padding: 14px;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: left;
-    font-size: 1.1rem;
-}
+            <div class="form-group">
+                <label for="reg-nombre">Nombre(s):</label>
+                <input type="text" id="reg-nombre" placeholder="Ej: Carlos Alberto" oninput="soloLetras(this)" required>
+            </div>
 
-.badge-votes {
-    background: var(--primary);
-    color: white;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 1.15rem;
-}
+            <div class="form-group">
+                <label for="reg-apellido">Apellido(s):</label>
+                <input type="text" id="reg-apellido" placeholder="Ej: Mendoza" oninput="soloLetras(this)" required>
+            </div>
 
-/* =========================================
-   AJUSTES RESPONSIVOS PARA TABLETS Y CELULARES
-   ========================================= */
-@media (max-width: 1150px) {
-    .admin-grid,
-    .candidates-grid {
-        grid-template-columns: repeat(4, 1fr);
+            <div class="form-group">
+                <label for="reg-rol">Función asignada:</label>
+                <select id="reg-rol">
+                    <option value="computadora">Encargado de Computadora</option>
+                    <option value="escrutinio">Jurado de Escrutinio Final</option>
+                    <option value="observador">Observador</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-enviar">✅ Enviar mis datos para el Carnet</button>
+        </form>
+
+        <div class="success-box" id="box-exito">
+            <h2>¡Datos recibidos con éxito!</h2>
+            <p style="color: #365314; font-size: 1.05rem; margin-bottom: 18px;">
+                Tu nombre ya quedó guardado en la lista para imprimir tu carnet oficial.
+            </p>
+            <button type="button" class="btn btn-primary" style="max-width: 280px;" onclick="registrarOtro()">Registrar a otro hermano</button>
+        </div>
+    </div>
+
+    <!-- VISTA 2: PANEL DE ADMINISTRADOR (?admin=true) -->
+    <div class="content" id="view-admin" style="display: none;">
+        <div class="admin-toolbar">
+            <div class="admin-row">
+                <div>
+                    <h2 style="color: var(--lime-dark); font-size: 1.25rem;">📋 Lista de Hermanos Registrados</h2>
+                    <p style="color: #475569; font-size: 0.9rem;">Los nombres aparecen automáticamente conforme los envían.</p>
+                </div>
+                <span class="stats-pill" id="contador-registrados">0 registrados</span>
+            </div>
+
+            <div class="admin-row" style="background: white; padding: 10px 14px; border-radius: 8px; border: 1px dashed #65a30d;">
+                <span style="font-size: 0.9rem; color: #365314;"><strong>Logo opcional</strong> (si deseas cambiar el predeterminado <code>img/logo.png (2).jpg</code>):</span>
+                <input type="file" accept="image/*" onchange="cargarLogoBase64(this)">
+            </div>
+
+            <button class="btn btn-primary" id="btn-pdf" onclick="descargarPDFCarnets()">📥 Descargar PDF de Carnets con Nombres (4 por hoja)</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 55px;">N.º</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cargo</th>
+                        <th style="width: 150px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-operadores">
+                    <tr><td colspan="5" style="text-align: center; color: #64748b;">Cargando lista...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="preview-title">Vista Previa de Carnets Listos para Imprimir (4 por hoja):</div>
+        <div id="sheets-container"></div>
+    </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCVlxVjMyxXt204UP4FLxz_dEhkAUqYuQ",
+        authDomain: "eleccion-junta-pastoral-2027.firebaseapp.com",
+        projectId: "eleccion-junta-pastoral-2027",
+        storageBucket: "eleccion-junta-pastoral-2027.firebasestorage.app",
+        messagingSenderId: "576863232357",
+        appId: "1:576863232357:web:fe39c85c6727d2f4a0818c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const esAdmin = urlParams.get('admin') === 'true';
+
+    let listaOperadores = [];
+    let logoDataURL = "";
+
+    function precargarLogoLocal() {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = function() {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                logoDataURL = canvas.toDataURL('image/png');
+                if (esAdmin && listaOperadores.length > 0) renderizarHojasCarnets();
+            } catch (e) {
+                console.warn("Logo local cargado sin canvas base64:", e);
+            }
+        };
+        img.src = "img/logo.png (2).jpg";
     }
-}
+    precargarLogoLocal();
 
-@media (max-width: 900px) {
-    .admin-grid,
-    .candidates-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    body {
-        padding: 8px;
+    function soloLetras(input) {
+        input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
     }
 
-    .container {
-        width: 100%;
-    }
-    
-    .section {
-        padding: 18px 12px;
-    }
+    // --- ENVÍO DEL FORMULARIO ---
+    async function enviarDatosCarnet(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-enviar');
+        const nombre = document.getElementById('reg-nombre').value.trim();
+        const apellido = document.getElementById('reg-apellido').value.trim();
+        const rol = document.getElementById('reg-rol').value;
 
-    #main-title {
-        font-size: 1.45rem;
-    }
+        if (!nombre || !apellido) {
+            alert("Por favor escribe tu nombre y apellido.");
+            return;
+        }
 
-    .round-banner-title {
-        font-size: 1.35rem;
-    }
+        btn.disabled = true;
+        btn.innerText = "Enviando datos...";
 
-    .group-title {
-        font-size: 1.15rem;
-        padding: 10px 12px;
-    }
+        try {
+            await db.collection("operadores_carnet").add({
+                nombre,
+                apellido,
+                rol,
+                creado: firebase.firestore.FieldValue.serverTimestamp()
+            });
 
-    .pdf-buttons-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* En celular: 2 tarjetas por fila para ver todos los candidatos rápido */
-    .admin-grid,
-    .candidates-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        padding: 10px;
-    }
-
-    .candidate-card {
-        padding: 10px;
+            document.getElementById('form-registro').style.display = 'none';
+            document.getElementById('box-exito').style.display = 'block';
+        } catch (error) {
+            alert("Error al enviar los datos: " + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "✅ Enviar mis datos para el Carnet";
+        }
     }
 
-    .candidate-img {
-        height: 175px;
+    function registrarOtro() {
+        document.getElementById('form-registro').reset();
+        document.getElementById('box-exito').style.display = 'none';
+        document.getElementById('form-registro').style.display = 'block';
     }
 
-    .candidate-name {
-        font-size: 1.05rem;
+    // --- MODO ADMINISTRADOR ---
+    if (esAdmin) {
+        document.getElementById('main-container').classList.add('admin-wide');
+        document.getElementById('header-subtitle').innerText = "Panel de Administración · Generador de Carnets con Nombres";
+        document.getElementById('view-form').style.display = 'none';
+        document.getElementById('view-admin').style.display = 'block';
+
+        db.collection("operadores_carnet").orderBy("creado", "asc").onSnapshot(snapshot => {
+            listaOperadores = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderizarAdmin();
+        });
     }
 
-    .candidate-card.selected::after {
-        top: -6px;
-        right: -6px;
-        width: 34px;
-        height: 34px;
-        font-size: 18px;
+    function renderizarAdmin() {
+        const tbody = document.getElementById('tabla-operadores');
+        const contador = document.getElementById('contador-registrados');
+        contador.innerText = `${listaOperadores.length} registrado(s)`;
+
+        if (listaOperadores.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Aún no se ha registrado ningún hermano.</td></tr>`;
+            document.getElementById('sheets-container').innerHTML = "";
+            return;
+        }
+
+        let mesaCounter = 1;
+        tbody.innerHTML = listaOperadores.map((op, index) => {
+            let etiquetaRol = "";
+            if (op.rol === 'escrutinio') {
+                etiquetaRol = `<span style="color: #4d7c0f; font-weight: 700;">Jurado de Escrutinio Final</span>`;
+            } else if (op.rol === 'observador') {
+                etiquetaRol = `<span style="color: #78350f; font-weight: 700;">Observador</span>`;
+            } else {
+                etiquetaRol = `<span style="color: #4d7c0f; font-weight: 700;">Encargado de Computadora (Mesa ${mesaCounter++})</span>`;
+            }
+
+            return `
+                <tr>
+                    <td><strong>${index + 1}</strong></td>
+                    <td>${op.nombre}</td>
+                    <td>${op.apellido}</td>
+                    <td>${etiquetaRol}</td>
+                    <td>
+                        <button class="btn-sm btn-edit" onclick="editarOperador('${op.id}')">Editar</button>
+                        <button class="btn-sm btn-del" onclick="eliminarOperador('${op.id}')">Borrar</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        renderizarHojasCarnets();
     }
-}
 
-/* =========================================
-   ESTILOS DE CARNETS (VERDE LIMÓN ENCENDIDO)
-   ========================================= */
-.gafete {
-    width: 2.85in;
-    height: 4.85in;
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 3px solid #65a30d;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-}
+    async function editarOperador(id) {
+        const op = listaOperadores.find(item => item.id === id);
+        if (!op) return;
+        const nuevoNombre = prompt("Editar Nombre:", op.nombre);
+        if (nuevoNombre === null) return;
+        const nuevoApellido = prompt("Editar Apellido:", op.apellido);
+        if (nuevoApellido === null) return;
 
-.top-band {
-    background: linear-gradient(135deg, #4d7c0f 0%, #65a30d 50%, #84cc16 100%);
-    color: #ffffff;
-    padding: 36px 10px 36px 10px;
-    text-align: center;
-    text-shadow: 0 1px 3px rgba(26, 46, 5, 0.45);
-}
+        if (nuevoNombre.trim() && nuevoApellido.trim()) {
+            await db.collection("operadores_carnet").doc(id).update({
+                nombre: nuevoNombre.trim(),
+                apellido: nuevoApellido.trim()
+            });
+        }
+    }
 
-.lanyard-slot {
-    width: 50px;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.4);
-    border: 1.5px solid rgba(255, 255, 255, 0.9);
-    border-radius: 6px;
-    margin: 0 auto 18px auto;
-}
+    async function eliminarOperador(id) {
+        if (confirm("¿Seguro que deseas eliminar este registro de la lista?")) {
+            await db.collection("operadores_carnet").doc(id).delete();
+        }
+    }
 
-.name-circle {
-    width: 162px;
-    height: 162px;
-    border-radius: 50%;
-    border: 3.5px dashed #84cc16;
-    background: #f7fee7;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    text-align: center;
-}
+    function crearGafeteHTML(op, numeroMesa) {
+        const logoSrc = logoDataURL || "img/logo.png (2).jpg";
+        const logoTag = `<img src="${logoSrc}" class="logo-badge" alt="Logo" onerror="this.style.visibility='hidden'">`;
 
-.person-name {
-    font-size: 1.42rem;
-    font-weight: 900;
-    color: #1a2e05;
-    text-transform: uppercase;
-    line-height: 1.12;
-    word-break: break-word;
-}
+        // Jurado de Escrutinio Final (verde limón)
+        if (op.rol === 'escrutinio') {
+            return `
+                <div class="gafete">
+                    <div class="top-band">
+                        <div class="lanyard-slot"></div>
+                        <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
+                    </div>
+                    <div class="logo-holder">${logoTag}</div>
+                    <div class="name-circle">
+                        <div class="person-name">${op.nombre}<br>${op.apellido}</div>
+                    </div>
+                    <div class="role-pill">JURADO DE<br>ESCRUTINIO FINAL</div>
+                    <div class="footer-bar">CONTEO DE ACTAS</div>
+                </div>
+            `;
+        }
 
-.role-pill {
-    background: #84cc16;
-    color: #1a2e05;
-    font-weight: 900;
-    font-size: 0.88rem;
-    padding: 8px 10px;
-    border-radius: 22px;
-    margin: 0 28px;
-    text-align: center;
-    letter-spacing: 0.2px;
-    line-height: 1.15;
-    text-transform: uppercase;
-    border: 2px solid #4d7c0f;
-}
+        // Observador (ámbar oscuro)
+        if (op.rol === 'observador') {
+            return `
+                <div class="gafete gafete-observador">
+                    <div class="top-band">
+                        <div class="lanyard-slot"></div>
+                        <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
+                    </div>
+                    <div class="logo-holder">${logoTag}</div>
+                    <div class="name-circle">
+                        <div class="person-name">${op.nombre}<br>${op.apellido}</div>
+                    </div>
+                    <div class="role-pill">OBSERVADOR</div>
+                    <div class="footer-bar">OBSERVADOR DEL PROCESO ELECTORAL</div>
+                </div>
+            `;
+        }
 
-.footer-bar {
-    background: #65a30d;
-    color: #ffffff;
-    font-weight: 900;
-    font-size: 0.88rem;
-    padding: 9px 6px;
-    text-align: center;
-    border-top: 2.5px solid #4d7c0f;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    text-shadow: 0 1px 2px rgba(26, 46, 5, 0.4);
-}
+        // Encargado de Computadora (verde limón)
+        return `
+            <div class="gafete">
+                <div class="top-band">
+                    <div class="lanyard-slot"></div>
+                    <div class="title">ELECCIÓN DE JUNTA<br>DIRECTIVA 2027</div>
+                </div>
+                <div class="logo-holder">${logoTag}</div>
+                <div class="name-circle">
+                    <div class="person-name">${op.nombre}<br>${op.apellido}</div>
+                </div>
+                <div class="role-pill">ENCARGADO DE<br>COMPUTADORA</div>
+                <div class="footer-bar">MESA DE VOTACIÓN N.º ${numeroMesa}</div>
+            </div>
+        `;
+    }
+
+    function renderizarHojasCarnets() {
+        const sheetsContainer = document.getElementById('sheets-container');
+        sheetsContainer.innerHTML = "";
+
+        let mesaNumero = 1;
+        const tarjetasHTML = listaOperadores.map(op => {
+            if (op.rol === 'computadora') {
+                return crearGafeteHTML(op, mesaNumero++);
+            } else {
+                return crearGafeteHTML(op, null);
+            }
+        });
+
+        for (let i = 0; i < tarjetasHTML.length; i += 4) {
+            const grupo = tarjetasHTML.slice(i, i + 4).join('');
+            sheetsContainer.innerHTML += `<div class="print-sheet">${grupo}</div>`;
+        }
+    }
+
+    function cargarLogoBase64(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            logoDataURL = e.target.result;
+            renderizarHojasCarnets();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function descargarPDFCarnets() {
+        if (listaOperadores.length === 0) {
+            alert("Aún no hay ningún hermano registrado para generar carnets.");
+            return;
+        }
+
+        const btn = document.getElementById('btn-pdf');
+        const sheetsContainer = document.getElementById('sheets-container');
+        btn.disabled = true;
+        btn.innerText = "⏳ Generando PDF con los nombres...";
+
+        if (!logoDataURL) {
+            document.querySelectorAll('.logo-badge').forEach(img => {
+                img.removeAttribute('src');
+                img.style.visibility = 'hidden';
+            });
+        }
+
+        const opciones = {
+            margin: 0,
+            filename: 'Carnets_Con_Nombres_Junta_2027.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, scrollY: 0 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+            pagebreak: { mode: ['css'] }
+        };
+
+        try {
+            await html2pdf().set(opciones).from(sheetsContainer).save();
+        } catch (err) {
+            alert("Error al generar el PDF: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "📥 Descargar PDF de Carnets con Nombres (4 por hoja)";
+        }
+    }
+</script>
+
+</body>
+</html>
