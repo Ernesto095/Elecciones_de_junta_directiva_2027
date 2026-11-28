@@ -463,7 +463,7 @@ select:focus {
 
 /* 2. Encabezado bajado bastante más arriba */
         .top-band {
-            background: linear-gradient(135deg, #064e3b 0%, #059669 65%, #10b981 100%);
+            background: linear-gradient(135deg, #064e3b 0%, #059669 65%, #b7c4c0 100%);
             color: white;
             padding: 36px 10px 36px 10px;
             text-align: center;
