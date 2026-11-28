@@ -13,6 +13,10 @@
             --lime-bright: #84cc16;
             --lime-soft: #ecfccb;
             --lime-bg: #f7fee7;
+            --emerald-dark: #064e3b;
+            --emerald-main: #065f46;
+            --emerald-light: #059669;
+            --emerald-soft: #d1fae5;
             --amber-dark: #78350f;
             --amber-main: #b45309;
             --amber-light: #d97706;
@@ -49,10 +53,9 @@
 
         header {
             background: linear-gradient(135deg, #4d7c0f 0%, #65a30d 55%, #84cc16 100%);
-            color: white;
+            color: #0f172a;
             padding: 28px 20px;
             text-align: center;
-            text-shadow: 0 1px 3px rgba(26, 46, 5, 0.4);
         }
 
         .header-logo {
@@ -68,13 +71,15 @@
 
         header h1 {
             font-size: 1.55rem;
-            font-weight: 800;
+            font-weight: 900;
             margin-bottom: 6px;
+            color: #000000;
         }
 
         header p {
             font-size: 0.98rem;
-            opacity: 0.95;
+            font-weight: 700;
+            color: #1a2e05;
         }
 
         .content {
@@ -120,13 +125,12 @@
         }
 
         .btn-primary {
-            background: var(--lime-main);
+            background: var(--emerald-dark);
             color: white;
-            text-shadow: 0 1px 2px rgba(26, 46, 5, 0.35);
         }
 
         .btn-primary:hover {
-            background: var(--lime-dark);
+            background: #022c22;
         }
 
         .btn-primary:disabled {
@@ -172,7 +176,7 @@
         }
 
         .stats-pill {
-            background: var(--lime-dark);
+            background: var(--emerald-dark);
             color: white;
             padding: 8px 16px;
             border-radius: 20px;
@@ -218,12 +222,12 @@
         .btn-del { background: #dc2626; color: white; }
 
         /* =========================================================
-           PLANTILLA DE CARNETS (VERDE LIMÓN ENCENDIDO)
+           PLANTILLA DE CARNETS
            ========================================================= */
         .preview-title {
             font-size: 1.15rem;
             font-weight: 800;
-            color: var(--lime-dark);
+            color: var(--emerald-dark);
             margin: 25px 0 12px 0;
             padding-top: 20px;
             border-top: 2px solid #e2e8f0;
@@ -271,19 +275,19 @@
             position: relative;
         }
 
+        /* 1. Encabezado verde limón encendido con LETRAS NEGRAS */
         .top-band {
             background: linear-gradient(135deg, #4d7c0f 0%, #65a30d 50%, #84cc16 100%);
-            color: #ffffff;
+            color: #000000;
             padding: 36px 10px 36px 10px;
             text-align: center;
-            text-shadow: 0 1px 3px rgba(26, 46, 5, 0.45);
         }
 
         .lanyard-slot {
             width: 50px;
             height: 8px;
-            background: rgba(255, 255, 255, 0.4);
-            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.45);
+            border: 1.5px solid #1a2e05;
             border-radius: 6px;
             margin: 0 auto 18px auto;
         }
@@ -293,7 +297,7 @@
             font-weight: 900;
             line-height: 1.15;
             letter-spacing: 0.3px;
-            color: #ffffff;
+            color: #000000;
         }
 
         .logo-holder {
@@ -332,38 +336,39 @@
         .person-name {
             font-size: 1.42rem;
             font-weight: 900;
-            color: #1a2e05;
+            color: #0f172a;
             text-transform: uppercase;
             line-height: 1.12;
             word-break: break-word;
         }
 
+        /* 2. Cápsula del cargo: VERDE OSCURO con LETRAS BLANCAS */
         .role-pill {
-            background: #84cc16;
-            color: #1a2e05;
+            background: #064e3b;
+            color: #ffffff;
             font-weight: 900;
             font-size: 0.88rem;
-            padding: 8px 10px;
+            padding: 9px 10px;
             border-radius: 22px;
             margin: 0 28px;
             text-align: center;
             letter-spacing: 0.2px;
             line-height: 1.15;
             text-transform: uppercase;
-            border: 2px solid #4d7c0f;
+            border: none;
         }
 
+        /* 3. Barra inferior (Mesa de votación): VERDE SUAVE como estaba antes */
         .footer-bar {
-            background: #65a30d;
-            color: #ffffff;
+            background: #d1fae5;
+            color: #064e3b;
             font-weight: 900;
-            font-size: 0.88rem;
-            padding: 9px 6px;
+            font-size: 0.86rem;
+            padding: 8px 6px;
             text-align: center;
-            border-top: 2.5px solid #4d7c0f;
-            letter-spacing: 0.3px;
+            border-top: 2.5px solid #059669;
+            letter-spacing: 0.2px;
             text-transform: uppercase;
-            text-shadow: 0 1px 2px rgba(26, 46, 5, 0.4);
         }
 
         /* Variante Observadores (Dorado / Ámbar) */
@@ -372,6 +377,9 @@
         }
         .gafete-observador .top-band {
             background: linear-gradient(135deg, #451a03 0%, #78350f 60%, #92400e 100%);
+        }
+        .gafete-observador .title {
+            color: #ffffff;
         }
         .gafete-observador .name-circle {
             border-color: var(--amber-dark);
@@ -383,13 +391,12 @@
         .gafete-observador .role-pill {
             background: #451a03;
             color: #ffffff;
-            border-color: #451a03;
             font-size: 0.98rem;
         }
         .gafete-observador .footer-bar {
-            background: var(--amber-dark);
-            color: #ffffff;
-            border-top-color: #451a03;
+            background: var(--amber-soft);
+            color: var(--amber-dark);
+            border-top-color: var(--amber-light);
         }
     </style>
 </head>
@@ -445,7 +452,7 @@
         <div class="admin-toolbar">
             <div class="admin-row">
                 <div>
-                    <h2 style="color: var(--lime-dark); font-size: 1.25rem;">📋 Lista de Hermanos Registrados</h2>
+                    <h2 style="color: var(--emerald-dark); font-size: 1.25rem;">📋 Lista de Hermanos Registrados</h2>
                     <p style="color: #475569; font-size: 0.9rem;">Los nombres aparecen automáticamente conforme los envían.</p>
                 </div>
                 <span class="stats-pill" id="contador-registrados">0 registrados</span>
@@ -595,11 +602,11 @@
         tbody.innerHTML = listaOperadores.map((op, index) => {
             let etiquetaRol = "";
             if (op.rol === 'escrutinio') {
-                etiquetaRol = `<span style="color: #4d7c0f; font-weight: 700;">Jurado de Escrutinio Final</span>`;
+                etiquetaRol = `<span style="color: #064e3b; font-weight: 700;">Jurado de Escrutinio Final</span>`;
             } else if (op.rol === 'observador') {
                 etiquetaRol = `<span style="color: #78350f; font-weight: 700;">Observador</span>`;
             } else {
-                etiquetaRol = `<span style="color: #4d7c0f; font-weight: 700;">Encargado de Computadora (Mesa ${mesaCounter++})</span>`;
+                etiquetaRol = `<span style="color: #064e3b; font-weight: 700;">Encargado de Computadora (Mesa ${mesaCounter++})</span>`;
             }
 
             return `
@@ -645,7 +652,7 @@
         const logoSrc = logoDataURL || "img/logo.png (2).jpg";
         const logoTag = `<img src="${logoSrc}" class="logo-badge" alt="Logo" onerror="this.style.visibility='hidden'">`;
 
-        // Jurado de Escrutinio Final (verde limón)
+        // Jurado de Escrutinio Final
         if (op.rol === 'escrutinio') {
             return `
                 <div class="gafete">
@@ -663,7 +670,7 @@
             `;
         }
 
-        // Observador (ámbar oscuro)
+        // Observador
         if (op.rol === 'observador') {
             return `
                 <div class="gafete gafete-observador">
@@ -681,7 +688,7 @@
             `;
         }
 
-        // Encargado de Computadora (verde limón)
+        // Encargado de Computadora
         return `
             <div class="gafete">
                 <div class="top-band">
