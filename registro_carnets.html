@@ -378,7 +378,7 @@
         }
 
         /* =========================================================
-           VARIANTE JURADO DE ESCRUTINIO FINAL (AZUL INTACTO)
+           VARIANTE JURADO DE ESCRUTINIO FINAL (AZUL + ÓVALO ANCHO)
            ========================================================= */
         .gafete-jurado {
             border-color: var(--blue-main);
@@ -394,11 +394,17 @@
             color: #ffffff;
         }
         .gafete-jurado .name-circle {
+            width: 240px;
+            height: 155px;
+            border-radius: 50%;
+            padding: 12px 18px;
             border-color: var(--blue-main);
             background: var(--blue-bg);
         }
         .gafete-jurado .person-name {
             color: var(--blue-dark);
+            font-size: 1.22rem;
+            line-height: 1.15;
         }
         .gafete-jurado .role-pill {
             background: var(--blue-dark);
@@ -697,7 +703,7 @@
         const logoSrc = logoDataURL || "img/logo.png (2).jpg";
         const logoTag = `<img src="${logoSrc}" class="logo-badge" alt="Logo" onerror="this.style.visibility='hidden'">`;
 
-        // Jurado de Escrutinio Final (Azul)
+        // Jurado de Escrutinio Final (Azul + Óvalo ancho)
         if (op.rol === 'escrutinio') {
             return `
                 <div class="gafete gafete-jurado">
