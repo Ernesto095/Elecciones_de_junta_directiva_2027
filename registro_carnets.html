@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
+            --emerald-deep: #022c22;
             --emerald-dark: #064e3b;
             --emerald-main: #065f46;
             --emerald-light: #059669;
@@ -47,7 +48,7 @@
         }
 
         header {
-            background: linear-gradient(135deg, #064e3b 0%, #059669 65%, #10b981 100%);
+            background: linear-gradient(135deg, #022c22 0%, #064e3b 65%, #065f46 100%);
             color: white;
             padding: 28px 20px;
             text-align: center;
@@ -102,8 +103,8 @@
         }
 
         input[type="text"]:focus, select:focus {
-            border-color: var(--emerald-light);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+            border-color: var(--emerald-main);
+            box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.2);
         }
 
         .btn {
@@ -118,12 +119,12 @@
         }
 
         .btn-primary {
-            background: var(--emerald-light);
+            background: var(--emerald-dark);
             color: white;
         }
 
         .btn-primary:hover {
-            background: var(--emerald-main);
+            background: var(--emerald-deep);
         }
 
         .btn-primary:disabled {
@@ -136,7 +137,7 @@
             text-align: center;
             padding: 25px 15px;
             background: var(--emerald-bg);
-            border: 2px solid var(--emerald-light);
+            border: 2px solid var(--emerald-dark);
             border-radius: 12px;
         }
 
@@ -215,7 +216,7 @@
         .btn-del { background: #dc2626; color: white; }
 
         /* =========================================================
-           PLANTILLA DE CARNETS (MÁS ANGOSTOS Y BAJADOS PARA PERFORAR)
+           PLANTILLA DE CARNETS (VERDE OSCURO DE ALTO CONTRASTE)
            ========================================================= */
         .preview-title {
             font-size: 1.15rem;
@@ -261,16 +262,15 @@
             background: white;
             border-radius: 16px;
             overflow: hidden;
-            border: 3px solid var(--emerald-light);
+            border: 3px solid var(--emerald-dark);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
         }
 
-        /* Encabezado bajado para dejar margen amplio arriba */
         .top-band {
-            background: linear-gradient(135deg, #064e3b 0%, #059669 65%, #10b981 100%);
+            background: linear-gradient(135deg, #022c22 0%, #064e3b 60%, #065f46 100%);
             color: white;
             padding: 36px 10px 36px 10px;
             text-align: center;
@@ -280,7 +280,7 @@
             width: 50px;
             height: 8px;
             background: rgba(255, 255, 255, 0.35);
-            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
             border-radius: 6px;
             margin: 0 auto 18px auto;
         }
@@ -290,6 +290,7 @@
             font-weight: 900;
             line-height: 1.15;
             letter-spacing: 0.3px;
+            color: #ffffff;
         }
 
         .logo-holder {
@@ -306,7 +307,7 @@
             border-radius: 50%;
             border: 3px solid white;
             background: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
             display: inline-block;
         }
 
@@ -314,7 +315,7 @@
             width: 162px;
             height: 162px;
             border-radius: 50%;
-            border: 3.5px dashed var(--emerald-light);
+            border: 3.5px dashed var(--emerald-dark);
             background: var(--emerald-bg);
             margin: 0 auto;
             display: flex;
@@ -328,15 +329,15 @@
         .person-name {
             font-size: 1.42rem;
             font-weight: 900;
-            color: var(--emerald-dark);
+            color: var(--emerald-deep);
             text-transform: uppercase;
             line-height: 1.12;
             word-break: break-word;
         }
 
         .role-pill {
-            background: var(--emerald-dark);
-            color: white;
+            background: var(--emerald-deep);
+            color: #ffffff;
             font-weight: 900;
             font-size: 0.88rem;
             padding: 8px 10px;
@@ -349,39 +350,40 @@
         }
 
         .footer-bar {
-            background: var(--emerald-soft);
-            color: var(--emerald-dark);
+            background: var(--emerald-dark);
+            color: #ffffff;
             font-weight: 900;
-            font-size: 0.86rem;
-            padding: 8px 6px;
+            font-size: 0.88rem;
+            padding: 9px 6px;
             text-align: center;
-            border-top: 2.5px solid var(--emerald-light);
-            letter-spacing: 0.2px;
+            border-top: 2.5px solid var(--emerald-deep);
+            letter-spacing: 0.3px;
             text-transform: uppercase;
         }
 
-        /* Variante Observadores (Dorado / Ámbar) */
+        /* Variante Observadores (Dorado / Ámbar oscuro) */
         .gafete-observador {
-            border-color: var(--amber-main);
+            border-color: var(--amber-dark);
         }
         .gafete-observador .top-band {
-            background: linear-gradient(135deg, #78350f 0%, #b45309 65%, #d97706 100%);
+            background: linear-gradient(135deg, #451a03 0%, #78350f 60%, #92400e 100%);
         }
         .gafete-observador .name-circle {
-            border-color: var(--amber-light);
+            border-color: var(--amber-dark);
             background: var(--amber-bg);
         }
         .gafete-observador .person-name {
-            color: var(--amber-dark);
+            color: #451a03;
         }
         .gafete-observador .role-pill {
-            background: var(--amber-dark);
+            background: #451a03;
+            color: #ffffff;
             font-size: 0.98rem;
         }
         .gafete-observador .footer-bar {
-            background: var(--amber-soft);
-            color: var(--amber-dark);
-            border-top-color: var(--amber-light);
+            background: var(--amber-dark);
+            color: #ffffff;
+            border-top-color: #451a03;
         }
     </style>
 </head>
@@ -443,7 +445,7 @@
                 <span class="stats-pill" id="contador-registrados">0 registrados</span>
             </div>
 
-            <div class="admin-row" style="background: white; padding: 10px 14px; border-radius: 8px; border: 1px dashed #059669;">
+            <div class="admin-row" style="background: white; padding: 10px 14px; border-radius: 8px; border: 1px dashed #064e3b;">
                 <span style="font-size: 0.9rem; color: #064e3b;"><strong>Logo opcional</strong> (si deseas cambiar el predeterminado <code>img/logo.png (2).jpg</code>):</span>
                 <input type="file" accept="image/*" onchange="cargarLogoBase64(this)">
             </div>
@@ -587,11 +589,11 @@
         tbody.innerHTML = listaOperadores.map((op, index) => {
             let etiquetaRol = "";
             if (op.rol === 'escrutinio') {
-                etiquetaRol = `<span style="color: #065f46; font-weight: 700;">Jurado de Escrutinio Final</span>`;
+                etiquetaRol = `<span style="color: #064e3b; font-weight: 700;">Jurado de Escrutinio Final</span>`;
             } else if (op.rol === 'observador') {
-                etiquetaRol = `<span style="color: #b45309; font-weight: 700;">Observador</span>`;
+                etiquetaRol = `<span style="color: #78350f; font-weight: 700;">Observador</span>`;
             } else {
-                etiquetaRol = `<span style="color: #065f46; font-weight: 700;">Encargado de Computadora (Mesa ${mesaCounter++})</span>`;
+                etiquetaRol = `<span style="color: #064e3b; font-weight: 700;">Encargado de Computadora (Mesa ${mesaCounter++})</span>`;
             }
 
             return `
@@ -637,7 +639,7 @@
         const logoSrc = logoDataURL || "img/logo.png (2).jpg";
         const logoTag = `<img src="${logoSrc}" class="logo-badge" alt="Logo" onerror="this.style.visibility='hidden'">`;
 
-        // Jurado de Escrutinio Final (verde)
+        // Jurado de Escrutinio Final (verde oscuro)
         if (op.rol === 'escrutinio') {
             return `
                 <div class="gafete">
@@ -655,7 +657,7 @@
             `;
         }
 
-        // Observador (dorado/ámbar)
+        // Observador (ámbar oscuro)
         if (op.rol === 'observador') {
             return `
                 <div class="gafete gafete-observador">
@@ -673,7 +675,7 @@
             `;
         }
 
-        // Encargado de Computadora (verde)
+        // Encargado de Computadora (verde oscuro)
         return `
             <div class="gafete">
                 <div class="top-band">
